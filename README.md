@@ -204,13 +204,6 @@ The creators of this project are **not affiliated with Puter.js** and provide th
 ---
 ## Test on Github Pages
 
-<!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://71cf8c95e195fe.lhr.life  
-🔗 **Bridge:** https://71cf8c95e195fe.lhr.life/bridge  
-💬 **Chat UI:** https://71cf8c95e195fe.lhr.life/chat  
-📄 **API Docs:** https://71cf8c95e195fe.lhr.life/docs  
-⏱️ *Updated: 2026-05-07 06:44:47 UTC*  
-<!-- LIVE_URL_END -->
 ---
 
 ## License
@@ -223,3 +216,11 @@ MIT License
 Issues and pull requests welcome!
 
 
+
+<!-- LIVE_URL_START -->
+🌐 **Live Server URL:** https://05bbd640ff4a76.lhr.life  
+🔗 **Bridge:** https://05bbd640ff4a76.lhr.life/bridge  
+💬 **Chat UI:** https://05bbd640ff4a76.lhr.life/chat  
+📄 **API Docs:** https://05bbd640ff4a76.lhr.life/docs  
+⏱️ *Updated: 2026-05-07 06:47:57 UTC*  
+<!-- LIVE_URL_END -->
