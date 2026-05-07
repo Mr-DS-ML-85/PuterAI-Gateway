@@ -227,11 +227,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://bedrooms-speeches-serial-das.trycloudflare.com  
-🔗 **Bridge:** https://bedrooms-speeches-serial-das.trycloudflare.com/bridge  
-💬 **Chat UI:** https://bedrooms-speeches-serial-das.trycloudflare.com/chat  
-📄 **API Docs:** https://bedrooms-speeches-serial-das.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://bedrooms-speeches-serial-das.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 08:32:33 UTC*  
+🌐 **Live Server URL:** https://attempts-clicks-crimes-washer.trycloudflare.com  
+🔗 **Bridge:** https://attempts-clicks-crimes-washer.trycloudflare.com/bridge  
+💬 **Chat UI:** https://attempts-clicks-crimes-washer.trycloudflare.com/chat  
+📄 **API Docs:** https://attempts-clicks-crimes-washer.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://attempts-clicks-crimes-washer.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 08:50:24 UTC*  
 <!-- LIVE_URL_END -->
