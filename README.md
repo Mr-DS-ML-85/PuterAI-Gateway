@@ -212,10 +212,11 @@ MIT License
 Issues and pull requests welcome!
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** http://52.162.9.246:8000
-🔗 **Bridge:** http://52.162.9.246:8000/bridge
-💬 **Chat UI:** http://52.162.9.246:8000/chat
-📄 **API Docs:** http://52.162.9.246:8000/docs
-⏱️ *Updated: 2026-05-07 06:24:51 UTC*
+🌐 **Live Server URL:** https://twitter.com/localhost_run].  
+🔗 **Bridge:** https://twitter.com/localhost_run]./bridge  
+💬 **Chat UI:** https://twitter.com/localhost_run]./chat  
+📄 **API Docs:** https://twitter.com/localhost_run]./docs  
+⏱️ *Updated: 2026-05-07 06:28:15 UTC*  
 <!-- LIVE_URL_END -->
