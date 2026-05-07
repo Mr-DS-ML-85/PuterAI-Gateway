@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://putergatewayai.devforge.qzz.io/sitemap.xml
