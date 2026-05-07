@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PuterAI Gateway — Free Frontier AI, Zero Keys</title>
+<meta name="description" content="Free access to GPT-5.5 Pro, Claude Opus 4.7, Gemini 3.1, and DeepSeek V4 via a zero-config OpenAI-compatible API gateway.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05080f;
+    --surface: #0c1118;
+    --card: #101620;
+    --border: #1c2535;
+    --cyan: #00e5ff;
+    --violet: #8b5cf6;
+    --amber: #f59e0b;
+    --green: #22d3a0;
+    --text: #dde4f0;
+    --muted: #556070;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; width: 100%; z-index: 200; border-bottom: 1px solid var(--border); backdrop-filter: blur(18px); background: rgba(5,8,15,0.85); }
+  .nav-inner { max-width: 1080px; margin: 0 auto; padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: var(--display); font-weight: 900; font-size: 1.05rem; color: var(--cyan); text-decoration: none; letter-spacing: -0.5px; text-shadow: 0 0 24px rgba(0,229,255,0.4); }
+  .logo em { color: var(--amber); font-style: normal; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--cyan); }
+  .btn-nav { border: 1px solid var(--cyan) !important; color: var(--cyan) !important; padding: 5px 14px; border-radius: 3px; }
+  .btn-nav:hover { background: rgba(0,229,255,0.08) !important; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 130px 0 80px; position: relative; }
+  .hero-glow  { position: absolute; right: -80px; top: 50%; transform: translateY(-50%); width: 520px; height: 520px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 68%); }
+  .hero-glow2 { position: absolute; left: -120px; bottom: 60px; width: 360px; height: 360px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%); }
+
+  .pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.22); border-radius: 999px; padding: 5px 14px; font-size: 0.68rem; color: var(--cyan); margin-bottom: 28px; letter-spacing: 0.06em; animation: fadeUp 0.6s ease both; }
+  .pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s ease infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+  h1 { font-family: var(--display); font-weight: 900; font-size: clamp(2.6rem, 6vw, 4.8rem); line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; }
+  h1 .c { color: var(--cyan); text-shadow: 0 0 40px rgba(0,229,255,0.3); }
+  h1 .v { color: var(--violet); }
+  .hero-sub { font-size: 0.9rem; line-height: 1.9; color: var(--muted); max-width: 520px; margin-bottom: 40px; animation: fadeUp 0.7s 0.2s ease both; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeUp 0.7s 0.3s ease both; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 4px; font-family: var(--mono); font-size: 0.78rem; font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.06em; }
+  .btn-primary { background: var(--cyan); color: #05080f; box-shadow: 0 0 28px rgba(0,229,255,0.28); }
+  .btn-primary:hover { box-shadow: 0 0 48px rgba(0,229,255,0.5); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: #2a3850; transform: translateY(-2px); }
+
+  /* TERMINAL */
+  .terminal { background: #080c14; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,229,255,0.04); margin: 64px 0; animation: fadeUp 0.8s 0.4s ease both; }
+  .terminal-bar { background: #0d1320; padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r{background:#f87171} .dot-y{background:#fbbf24} .dot-g{background:#34d399}
+  .terminal-title { margin-left: 8px; font-size: 0.7rem; color: var(--muted); }
+  .terminal-body { padding: 22px 24px; font-size: 0.78rem; line-height: 2.1; overflow-x: auto; }
+  .t-comment{color:#2e4060} .t-cmd{color:var(--cyan)} .t-str{color:var(--green)} .t-val{color:var(--amber)} .t-prompt{color:var(--muted);user-select:none;margin-right:10px}
+
+  /* SECTIONS */
+  .section { padding: 80px 0; }
+  .section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cyan); margin-bottom: 12px; }
+  .section-title { font-family: var(--display); font-weight: 900; font-size: clamp(1.8rem, 3.5vw, 2.6rem); letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
+  .section-sub { color: var(--muted); font-size: 0.84rem; line-height: 1.85; max-width: 480px; }
+
+  /* MODEL CARDS */
+  .models-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-top: 48px; }
+  .model-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px 18px; transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; position: relative; overflow: hidden; }
+  .model-card::before { content:''; position:absolute; inset:0; background: linear-gradient(135deg, var(--ac, rgba(0,229,255,0.04)) 0%, transparent 60%); }
+  .model-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .model-provider { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; opacity: 0.75; }
+  .model-name { font-family: var(--display); font-weight: 700; font-size: 1rem; line-height: 1.2; margin-bottom: 12px; }
+  .model-tag { display: inline-block; font-size: 0.6rem; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .c-openai  .model-provider{color:var(--green)}  .c-openai:hover{border-color:rgba(34,211,160,0.45)}
+  .c-claude  .model-provider{color:var(--amber)}  .c-claude:hover{border-color:rgba(245,158,11,0.45)}
+  .c-google  .model-provider{color:var(--cyan)}   .c-google:hover{border-color:rgba(0,229,255,0.45)}
+  .c-deepseek.model-provider{color:var(--violet)} .c-deepseek:hover{border-color:rgba(139,92,246,0.45)}
+
+  /* FLOW */
+  .flow { margin-top: 56px; display: flex; flex-direction: column; }
+  .flow-step { display: grid; grid-template-columns: 48px 1fr; gap: 0 20px; position: relative; }
+  .flow-step:not(:last-child)::after { content:''; position:absolute; left:23px; top:48px; bottom:0; width:2px; background:var(--border); }
+  .flow-num { width:48px; height:48px; border-radius:50%; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:var(--display); font-weight:900; font-size:1rem; color:var(--cyan); flex-shrink:0; z-index:1; }
+  .flow-content { padding: 8px 0 44px; }
+  .flow-title { font-family: var(--display); font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+  .flow-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.8; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 48px; }
+  .feat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 28px 24px; transition: border-color 0.25s, transform 0.2s; }
+  .feat-card:hover { border-color: #243045; transform: translateY(-3px); }
+  .feat-icon { font-size: 1.4rem; margin-bottom: 16px; display: block; }
+  .feat-title { font-family: var(--display); font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+  .feat-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.8; }
+
+  /* CODE */
+  .code-block { background: #080c14; border: 1px solid var(--border); border-radius: 6px; padding: 20px 22px; font-size: 0.76rem; line-height: 1.9; overflow-x: auto; margin-top: 16px; }
+
+  /* TABLE */
+  .ep-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .ep-table th { padding:12px 18px; text-align:left; color:var(--muted); font-weight:400; border-bottom:1px solid var(--border); background:var(--card); }
+  .ep-table td { padding:12px 18px; border-bottom:1px solid var(--border); }
+  .ep-table tr:last-child td { border-bottom:none; }
+  .method-get{color:var(--green);font-size:0.68rem} .method-post{color:var(--amber);font-size:0.68rem}
+
+  /* DISCLAIMER */
+  .disclaimer { background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; padding: 28px; margin-top: 48px; }
+  .disclaimer-head { display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:0.95rem; color:var(--amber); margin-bottom:12px; }
+  .disclaimer p { font-size: 0.78rem; color: var(--muted); line-height: 1.9; }
+
+  /* CTA */
+  .cta-strip { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:72px 0; text-align:center; position:relative; overflow:hidden; }
+  .cta-strip::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center, rgba(0,229,255,0.05) 0%, transparent 70%); pointer-events:none; }
+  .cta-strip h2 { font-family:var(--display); font-weight:900; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:-1px; margin-bottom:12px; }
+  .cta-strip p { color:var(--muted); font-size:0.82rem; margin-bottom:32px; }
+
+  /* FOOTER */
+  footer { padding:40px 0; border-top:1px solid var(--border); display:flex; flex-direction:column; align-items:center; gap:14px; font-size:0.7rem; color:var(--muted); text-align:center; }
+  footer a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
+  footer a:hover { color:var(--cyan); }
+  .footer-links { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+
+  /* DIVIDER */
+  .sep { border-top: 1px solid var(--border); }
+
+  /* REVEAL */
+  .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* RESPONSIVE */
+  @media(max-width:700px){
+    .nav-links .hs{display:none}
+    h1{letter-spacing:-1px}
+    .hero{padding:110px 0 60px}
+    .models-grid{grid-template-columns:1fr 1fr}
+    .two-col{grid-template-columns:1fr !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">Puter<em>AI</em> Gateway</a>
+    <div class="nav-links">
+      <a href="#how" class="hs">How It Works</a>
+      <a href="#models" class="hs">Models</a>
+      <a href="#usage" class="hs">Usage</a>
+      <a href="https://github.com" class="btn-nav">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+
+    <div class="pill">
+      <span class="pill-dot"></span>
+      Live · Zero API Keys Required
+    </div>
+
+    <h1>Frontier AI.<br><span class="c">Completely</span> <span class="v">Free.</span></h1>
+
+    <p class="hero-sub">
+      An OpenAI-compatible gateway that routes your requests through a real browser session —
+      five cutting-edge AI models, no API keys, no paywalls, no fuss.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="get-started.html" class="btn btn-primary">Get Started →</a>
+      <a href="#how" class="btn btn-outline">See How It Works</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="terminal-title">quick-start.sh</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$</span><span class="t-cmd">./run.sh</span></div>
+        <div><span class="t-comment"># Server running at http://localhost:8000</span></div>
+        <br>
+        <div><span class="t-prompt">$</span><span class="t-cmd">curl</span> -X POST http://localhost:8000/v1/chat/completions \</div>
+        <div>&nbsp;&nbsp;-H <span class="t-str">"Content-Type: application/json"</span> \</div>
+        <div>&nbsp;&nbsp;-d <span class="t-str">'{"model":"<span class="t-val">claude-opus-4.7</span>","messages":[{"role":"user","content":"Hello"}]}'</span></div>
+        <br>
+        <div><span class="t-comment"># ✓ Response received · No API key · Completely free</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- HOW IT WORKS -->
+<section class="section sep" id="how">
+  <div class="wrap">
+    <div class="section-label reveal">Architecture</div>
+    <h2 class="section-title reveal">No headless browsers.<br>No Playwright. No keys.</h2>
+    
+    <p class="section-sub reveal">A simple but clever trick: your browser does the heavy lifting. Log in once, keep a tab open, done.</p>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-content">
+          <div class="flow-title">Your app sends a request</div>
+          <div class="flow-desc">Any OpenAI SDK client hits <code style="color:var(--cyan)">localhost:8000/v1/chat/completions</code>. Just swap the base URL — no other code changes needed.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-content">
+          <div class="flow-title">FastAPI queues the request</div>
+          <div class="flow-desc">The Python server stores it in memory with a unique ID and waits for a bridge to pick it up.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-content">
+          <div class="flow-title">The bridge tab fires the AI call</div>
+          <div class="flow-desc">A browser tab polls every second, spots the pending request, and calls <code style="color:var(--cyan)">puter.ai.chat()</code> through your authenticated Puter session — no server-side secrets, ever.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-content">
+          <div class="flow-title">Response returned in OpenAI format</div>
+          <div class="flow-desc">The AI result travels back through the bridge, Python wraps it in standard OpenAI JSON, and your app receives it exactly as expected.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELS -->
+<section class="section sep" id="models">
+  <div class="wrap">
+    <div class="section-label reveal">Supported Models</div>
+    <h2 class="section-title reveal">Five frontier models.<br>One endpoint.</h2>
+    <p class="section-sub reveal">All accessible via a single unified API — just change the model name string.</p>
+
+    <div class="models-grid reveal">
+      <div class="model-card c-openai">
+        <div class="model-provider">OpenAI</div>
+        <div class="model-name">GPT-5.5 Pro</div>
+        <span class="model-tag">gpt-5.5-pro</span>
+      </div>
+      <div class="model-card c-claude">
+        <div class="model-provider">Anthropic</div>
+        <div class="model-name">Claude Opus 4.7</div>
+        <span class="model-tag">claude-opus-4.7</span>
+      </div>
+      <div class="model-card c-google">
+        <div class="model-provider">Google</div>
+        <div class="model-name">Gemini 3.1 Pro</div>
+        <span class="model-tag">gemini-3.1-pro</span>
+      </div>
+      <div class="model-card c-google">
+        <div class="model-provider">Google</div>
+        <div class="model-name">Gemini 3.1 Flash</div>
+        <span class="model-tag">gemini-3.1-flash</span>
+      </div>
+      <div class="model-card c-deepseek">
+        <div class="model-provider">DeepSeek</div>
+        <div class="model-name">DeepSeek V4</div>
+        <span class="model-tag">deepseek-v4</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section sep">
+  <div class="wrap">
+    <div class="section-label reveal">Features</div>
+    <h2 class="section-title reveal">Everything included.<br>Nothing to configure.</h2>
+
+    <div class="features-grid reveal">
+      <div class="feat-card">
+        <span class="feat-icon">🔌</span>
+        <div class="feat-title">OpenAI-Compatible API</div>
+        <div class="feat-desc">Drop-in replacement for the OpenAI SDK. Change <code style="color:var(--cyan)">base_url</code> and your existing code works instantly with any model.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">⚡</span>
+        <div class="feat-title">Streaming Responses</div>
+        <div class="feat-desc">Full SSE-based streaming support. Tokens arrive in real time, exactly as you'd expect from the official APIs.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">💬</span>
+        <div class="feat-title">Built-in Chat UI</div>
+        <div class="feat-desc">A polished ChatGPT-style interface ships at <code style="color:var(--cyan)">/chat</code> — ready to use out of the box with no extra setup.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📎</span>
+        <div class="feat-title">File Uploads</div>
+        <div class="feat-desc">Upload files through the chat UI. Contents get injected into the prompt context for any model to read and reason over.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📄</span>
+        <div class="feat-title">Interactive API Docs</div>
+        <div class="feat-desc">Swagger UI auto-generated at <code style="color:var(--cyan)">/docs</code>. Explore and test every endpoint without writing a line of code.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🪶</span>
+        <div class="feat-title">Zero Config Setup</div>
+        <div class="feat-desc">One shell script. One browser tab. Log into Puter once. That's the entire setup — no Docker, no env files, no complexity.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USAGE -->
+<section class="section sep" id="usage">
+  <div class="wrap">
+    <div class="section-label reveal">API Usage</div>
+    <h2 class="section-title reveal">Works with any<br>OpenAI client.</h2>
+    <p class="section-sub reveal">Change <code style="color:var(--cyan)">base_url</code>. That's it. Your existing code runs unchanged.</p>
+
+    <div class="reveal" style="margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:24px" class="two-col">
+      <div>
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px">Python SDK</div>
+        <div class="code-block">
+<span style="color:var(--violet)">from</span> openai <span style="color:var(--violet)">import</span> OpenAI<br><br>
+client = OpenAI(<br>
+&nbsp;&nbsp;base_url=<span style="color:var(--green)">"http://localhost:8000/v1"</span>,<br>
+&nbsp;&nbsp;api_key=<span style="color:var(--green)">"no-key-needed"</span><br>
+)<br><br>
+resp = client.chat.completions.create(<br>
+&nbsp;&nbsp;model=<span style="color:var(--amber)">"claude-opus-4.7"</span>,<br>
+&nbsp;&nbsp;messages=[{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">"role"</span>: <span style="color:var(--green)">"user"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">"content"</span>: <span style="color:var(--green)">"Hello!"</span><br>
+&nbsp;&nbsp;}]<br>
+)<br>
+<span style="color:var(--violet)">print</span>(resp.choices[<span style="color:var(--amber)">0</span>].message.content)
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px">Streaming</div>
+        <div class="code-block">
+stream = client.chat.completions.create(<br>
+&nbsp;&nbsp;model=<span style="color:var(--amber)">"gpt-5.5-pro"</span>,<br>
+&nbsp;&nbsp;messages=[{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">"role"</span>: <span style="color:var(--green)">"user"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">"content"</span>: <span style="color:var(--green)">"Write a haiku"</span><br>
+&nbsp;&nbsp;}],<br>
+&nbsp;&nbsp;stream=<span style="color:var(--cyan)">True</span><br>
+)<br><br>
+<span style="color:var(--violet)">for</span> chunk <span style="color:var(--violet)">in</span> stream:<br>
+&nbsp;&nbsp;<span style="color:var(--violet)">print</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;chunk.choices[<span style="color:var(--amber)">0</span>].delta.content,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end=<span style="color:var(--green)">""</span><br>
+&nbsp;&nbsp;)
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:48px">
+      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:16px">API Endpoints</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
+        <table class="ep-table">
+          <thead>
+            <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="method-get">GET</span></td><td style="color:var(--cyan)">/health</td><td style="color:var(--muted)">Server health status</td></tr>
+            <tr><td><span class="method-get">GET</span></td><td style="color:var(--cyan)">/v1/models</td><td style="color:var(--muted)">List available models</td></tr>
+            <tr><td><span class="method-post">POST</span></td><td style="color:var(--cyan)">/v1/chat/completions</td><td style="color:var(--muted)">Chat completion (OpenAI-compatible)</td></tr>
+            <tr><td><span class="method-get">GET</span></td><td style="color:var(--cyan)">/bridge</td><td style="color:var(--muted)">Open the browser bridge</td></tr>
+            <tr><td><span class="method-get">GET</span></td><td style="color:var(--cyan)">/chat</td><td style="color:var(--muted)">Open the chat UI</td></tr>
+            <tr><td><span class="method-get">GET</span></td><td style="color:var(--cyan)">/docs</td><td style="color:var(--muted)">Swagger API documentation</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="disclaimer reveal">
+      <div class="disclaimer-head">⚠️ Honest Disclaimer</div>
+      <p>
+        Puter's free tier has undocumented daily limits (typically ~100 requests per account) and may occasionally
+        return rate-limit errors. This is a community tool — not affiliated with Puter.js. For production workloads,
+        consider official pay-as-you-go APIs or running local models via Ollama. Use at your own risk.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-strip">
+  <div class="wrap">
+    <h2>Ready to try it?</h2>
+    <p>One shell script. One browser tab. Five frontier AI models.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="https://github.com" class="btn btn-primary">Clone on GitHub →</a>
+      <a href="#usage" class="btn btn-outline">Browse the Docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" style="font-family:'Syne',sans-serif;font-weight:900;color:var(--cyan);font-size:0.9rem;text-decoration:none;text-shadow:0 0 16px rgba(0,229,255,0.3)">
+    Puter<span style="color:var(--amber)">AI</span> Gateway
+  </a>
+  <div class="footer-links">
+    <a href="https://github.com">GitHub</a>
+    <a href="https://puter.com">Puter.com</a>
+    <a href="#how">How It Works</a>
+    <a href="#models">Models</a>
+    <a href="#usage">API Usage</a>
+  </div>
+  <div>MIT License · Community project · Not affiliated with Puter.js</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

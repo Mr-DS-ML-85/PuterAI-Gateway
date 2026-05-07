@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Started — PuterAI Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05080f;
+      --surface: #0c1118;
+      --card: #101620;
+      --border: #1c2535;
+      --cyan: #00e5ff;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --green: #22d3a0;
+      --text: #dde4f0;
+      --muted: #556070;
+      --mono: 'Space Mono', monospace;
+      --display: 'Syne', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 2.5rem;
+      color: var(--cyan);
+      text-shadow: 0 0 24px rgba(0,229,255,0.4);
+      margin-bottom: 1rem;
+    }
+    .logo em { color: var(--amber); font-style: normal; }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .url-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .url-box label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .url-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .url-input {
+      flex: 1;
+      min-width: 250px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+    }
+    .url-input:focus { border-color: var(--cyan); }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--cyan);
+      color: #05080f;
+      box-shadow: 0 0 20px rgba(0,229,255,0.25);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(0,229,255,0.5);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: #2a3850; transform: translateY(-2px); }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+    .option-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .option-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .option-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .option-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .option-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 8px;
+    }
+
+    .status-text {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+    .status-text.success { color: var(--green); }
+    .status-text.error { color: #f87171; }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Puter<em>AI</em> Gateway</div>
+    <p class="subtitle">Choose how you want to connect — no API keys required.</p>
+
+    <!-- URL box (auto-filled) -->
+    <div class="url-box">
+      <label for="serverUrl">Server Public URL</label>
+      <div class="url-row">
+        <input type="text" id="serverUrl" class="url-input" placeholder="https://xxx.bore.pub (auto-detected)">
+        <button class="btn btn-outline" onclick="saveAndRefresh()">↻ Save</button>
+      </div>
+      <div id="urlStatus" class="status-text"></div>
+    </div>
+
+    <!-- Two options -->
+    <div class="options-grid">
+      <div class="option-card" onclick="openPage('/bridge')">
+        <span class="option-icon">🔗</span>
+        <div class="option-title">Bridge Only</div>
+        <div class="option-desc">Open the AI bridge tab. Your Python apps can then use the gateway.</div>
+        <span class="badge">API mode</span>
+      </div>
+
+      <div class="option-card" onclick="openPage('/chat')">
+        <span class="option-icon">💬</span>
+        <div class="option-title">Chat UI</div>
+        <div class="option-desc">A ChatGPT‑style interface. Chat with any model right in your browser.</div>
+        <span class="badge">Interactive</span>
+      </div>
+    </div>
+
+    <a href="/" class="back-link">← Back to home</a>
+  </div>
+
+  <script>
+    // ── Auto‑fill server URL from GitHub repo ──────────────────────────
+    async function autoLoadUrl() {
+      const input = document.getElementById('serverUrl');
+      const status = document.getElementById('urlStatus');
+
+      // 1. Try fetching public_url.json from the repository
+      try {
+        const res = await fetch(
+          'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/public_url.json'
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.url) {
+            input.value = data.url;
+            localStorage.setItem('puterai_server_url', data.url);
+            status.textContent = '✅ Live server detected';
+            status.className = 'status-text success';
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 2. Fallback to localStorage
+      const savedUrl = localStorage.getItem('puterai_server_url');
+      if (savedUrl) {
+        input.value = savedUrl;
+        status.textContent = '📦 Using previously saved URL';
+        status.className = 'status-text';
+        return;
+      }
+
+      // 3. Nothing available
+      status.textContent = '⚠️ No server URL found — paste one or wait for the CI to update this page';
+      status.className = 'status-text error';
+    }
+
+    // ── Save button ─────────────────────────────────────────────────────
+    function saveAndRefresh() {
+      const input = document.getElementById('serverUrl');
+      const url = input.value.trim().replace(/\/+$/, '');
+      if (!url) return alert('Enter a valid URL');
+      localStorage.setItem('puterai_server_url', url);
+      document.getElementById('urlStatus').textContent = '✅ URL saved';
+      document.getElementById('urlStatus').className = 'status-text success';
+    }
+
+    // Open a single page (Bridge or Chat)
+    function openPage(path) {
+      const url = document.getElementById('serverUrl').value.trim().replace(/\/+$/, '');
+      if (!url) return alert('Enter the server public URL first!');
+      localStorage.setItem('puterai_server_url', url);
+      window.open(url + path, '_blank');
+    }
+
+    // Keep input in sync with localStorage
+    document.getElementById('serverUrl').addEventListener('input', function() {
+      const val = this.value.trim().replace(/\/+$/, '');
+      if (val) localStorage.setItem('puterai_server_url', val);
+    });
+
+    // Kick off
+    autoLoadUrl();
+  </script>
+</body>
+</html>
