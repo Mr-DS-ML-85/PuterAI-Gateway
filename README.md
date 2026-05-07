@@ -224,11 +224,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://douglas-answers-explained-factory.trycloudflare.com  
-🔗 **Bridge:** https://douglas-answers-explained-factory.trycloudflare.com/bridge  
-💬 **Chat UI:** https://douglas-answers-explained-factory.trycloudflare.com/chat  
-📄 **API Docs:** https://douglas-answers-explained-factory.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://douglas-answers-explained-factory.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 07:57:30 UTC*  
+🌐 **Live Server URL:** https://highland-attendance-curtis-doubt.trycloudflare.com  
+🔗 **Bridge:** https://highland-attendance-curtis-doubt.trycloudflare.com/bridge  
+💬 **Chat UI:** https://highland-attendance-curtis-doubt.trycloudflare.com/chat  
+📄 **API Docs:** https://highland-attendance-curtis-doubt.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://highland-attendance-curtis-doubt.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 07:59:28 UTC*  
 <!-- LIVE_URL_END -->
