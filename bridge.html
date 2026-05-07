@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PuterAI Bridge</title>
+<script src="https://js.puter.com/v2/"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', monospace;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .logo { font-size: 32px; }
+  h1 { font-size: 22px; color: #58a6ff; }
+  .subtitle { color: #8b949e; font-size: 13px; margin-top: 2px; }
+
+  .status-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #3fb950;
+    animation: pulse 2s infinite;
+  }
+  .dot.off { background: #f85149; animation: none; }
+  .dot.warn { background: #d29922; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .status-text { font-size: 15px; font-weight: bold; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .stat {
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-val { font-size: 24px; font-weight: bold; color: #58a6ff; }
+  .stat-lbl { font-size: 11px; color: #8b949e; margin-top: 2px; }
+
+  .log-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .log-title {
+    font-size: 13px;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  #log {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .log-entry {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #0d1117;
+    border-left: 3px solid #30363d;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .log-entry.success { border-color: #3fb950; }
+  .log-entry.error   { border-color: #f85149; color: #f85149; }
+  .log-entry.info    { border-color: #58a6ff; color: #79c0ff; }
+  .log-entry.working { border-color: #d29922; color: #e3b341; }
+  .time { color: #484f58; margin-right: 6px; }
+
+  .puter-login {
+    display: none;
+    background: #161b22;
+    border: 2px dashed #d29922;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .puter-login.visible { display: block; }
+  .puter-login h3 { color: #d29922; margin-bottom: 8px; }
+  .puter-login p { color: #8b949e; font-size: 13px; margin-bottom: 16px; }
+  .btn-login {
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .btn-login:hover { background: #2ea043; }
+
+  .api-info {
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #8b949e;
+  }
+  .api-info code { color: #79c0ff; background: #161b22; padding: 2px 6px; border-radius: 4px; }
+
+  .warning-banner {
+    background: #1f1108;
+    border: 1px solid #d29922;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #d29922;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🔗</div>
+  <div>
+    <h1>PuterAI Bridge</h1>
+    <div class="subtitle">Connecting Python API ↔ Puter.js AI — keep this tab open</div>
+  </div>
+</div>
+
+<!-- Puter login prompt -->
+<div class="puter-login" id="loginPrompt">
+  <h3>⚠️ Puter Login Required</h3>
+  <p>You need to be logged into Puter.com for the AI to work. It's free!</p>
+  <button class="btn-login" onclick="loginToPuter()">Login to Puter</button>
+</div>
+
+<!-- Status card -->
+<div class="status-card">
+  <div class="status-row">
+    <div class="dot" id="serverDot"></div>
+    <div class="status-text" id="serverStatus">Connecting to Python server...</div>
+  </div>
+  <div class="status-row" style="margin-bottom:0">
+    <div class="dot" id="puterDot"></div>
+    <div class="status-text" id="puterStatus">Checking Puter.js...</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="totalCount">0</div>
+      <div class="stat-lbl">Requests Handled</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="pendingCount">0</div>
+      <div class="stat-lbl">Pending in Queue</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="errorCount">0</div>
+      <div class="stat-lbl">Errors</div>
+    </div>
+  </div>
+
+  <div class="api-info">
+    📡 Use this in Python: <code>base_url="http://localhost:8000/v1"</code> &nbsp;|&nbsp;
+    <code>api_key="no-key-needed"</code>
+  </div>
+</div>
+
+<!-- Log -->
+<div class="log-card">
+  <div class="log-title">📋 Activity Log</div>
+  <div id="log"></div>
+</div>
+
+<script>
+const SERVER = 'http://localhost:8000';
+let totalCount  = 0;
+let errorCount  = 0;
+let isPolling   = false;
+let puterReady  = false;
+let serverReady = false;
+let processingId = null;  // avoid double-processing
+
+// ── Counters ─────────────────────────────────────────────────────────────────
+function updateStats(pending = 0) {
+  document.getElementById('totalCount').textContent   = totalCount;
+  document.getElementById('pendingCount').textContent = pending;
+  document.getElementById('errorCount').textContent   = errorCount;
+}
+
+// ── Logging ──────────────────────────────────────────────────────────────────
+function log(msg, type = 'info') {
+  const div = document.getElementById('log');
+  const now = new Date().toLocaleTimeString();
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.innerHTML = `<span class="time">${now}</span>${msg}`;
+  div.insertBefore(entry, div.firstChild);
+  while (div.children.length > 80) div.removeChild(div.lastChild);
+}
+
+// ── Puter auth ────────────────────────────────────────────────────────────────
+async function checkPuter() {
+  try {
+    const user = await puter.auth.getUser();
+    if (user?.username) {
+      puterReady = true;
+      document.getElementById('puterDot').className    = 'dot';
+      document.getElementById('puterStatus').textContent = `✅ Puter: @${user.username}`;
+      document.getElementById('loginPrompt').classList.remove('visible');
+      log(`Puter authenticated as @${user.username}`, 'success');
+      return true;
+    }
+  } catch(e) {}
+
+  // Not logged in
+  document.getElementById('puterDot').className    = 'dot warn';
+  document.getElementById('puterStatus').textContent = '⚠️ Puter: Not logged in';
+  document.getElementById('loginPrompt').classList.add('visible');
+  log('Puter not logged in — click "Login to Puter" above', 'error');
+  return false;
+}
+
+function loginToPuter() {
+  puter.auth.signIn().then(() => {
+    log('Puter login successful!', 'success');
+    checkPuter();
+  }).catch(e => log(`Login failed: ${e.message}`, 'error'));
+}
+
+// ── Process a single request ──────────────────────────────────────────────────
+async function processRequest(request) {
+  const { id, model, messages } = request;
+  if (processingId === id) return;  // already handling
+  processingId = id;
+
+  log(`🤖 [${id.slice(0,8)}] Model: ${model} — ${messages.length} messages`, 'working');
+
+  try {
+    // Build puter-compatible message array
+    const puterMessages = messages.map(m => ({
+      role:    m.role,
+      content: m.content,
+    }));
+
+    const response = await puter.ai.chat(puterMessages, { model });
+
+    // Extract text content from response
+    let content = '';
+    if (typeof response === 'string') {
+      content = response;
+    } else if (response?.message?.content) {
+      const c = response.message.content;
+      if (typeof c === 'string') {
+        content = c;
+      } else if (Array.isArray(c)) {
+        content = c.filter(x => x.type === 'text').map(x => x.text).join('');
+      }
+    } else if (response?.text) {
+      content = response.text;
+    }
+
+    // Post result back to Python
+    await fetch(`${SERVER}/api/result`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, content }),
+    });
+
+    totalCount++;
+    processingId = null;
+    const preview = content.slice(0, 100).replace(/\n/g, ' ');
+    log(`✅ [${id.slice(0,8)}] Done: "${preview}${content.length > 100 ? '…' : ''}"`, 'success');
+    updateStats();
+
+  } catch(err) {
+    errorCount++;
+    processingId = null;
+    const errMsg = err?.message || String(err);
+    log(`❌ [${id.slice(0,8)}] Error: ${errMsg}`, 'error');
+
+    try {
+      await fetch(`${SERVER}/api/result`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, error: errMsg }),
+      });
+    } catch(e2) {}
+    updateStats();
+  }
+}
+
+// ── Polling loop ──────────────────────────────────────────────────────────────
+async function poll() {
+  try {
+    const res  = await fetch(`${SERVER}/api/pending`, { signal: AbortSignal.timeout(4000) });
+    const data = await res.json();
+
+    serverReady = true;
+    document.getElementById('serverDot').className    = 'dot';
+    document.getElementById('serverStatus').textContent = '✅ Python server: connected';
+
+    const pending = data.request ? 1 : 0;
+    updateStats(pending);
+
+    if (data.request && puterReady && !processingId) {
+      await processRequest(data.request);
+    }
+
+  } catch(err) {
+    serverReady = false;
+    document.getElementById('serverDot').className    = 'dot off';
+    document.getElementById('serverStatus').textContent = `❌ Python server: offline (${err.message})`;
+    if (Math.random() < 0.05) {  // log occasionally, not every poll
+      log(`Server offline: ${err.message}`, 'error');
+    }
+  }
+
+  setTimeout(poll, 1000);
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+(async () => {
+  log('Bridge starting up…', 'info');
+  await checkPuter();
+  log('Starting poll loop…', 'info');
+  poll();
+})();
+</script>
+</body>
+</html>

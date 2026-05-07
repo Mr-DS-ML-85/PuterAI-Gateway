@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PuterAI Chat</title>
+<script src="https://js.puter.com/v2/"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d1117;
+  --surface:   #161b22;
+  --border:    #30363d;
+  --accent:    #58a6ff;
+  --accent2:   #3fb950;
+  --text:      #e6edf3;
+  --muted:     #8b949e;
+  --user-bg:   #1f6feb;
+  --ai-bg:     #161b22;
+  --radius:    12px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Top bar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.topbar-logo { font-size: 22px; }
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--accent); }
+.topbar-sub { font-size: 11px; color: var(--muted); }
+.spacer { flex: 1; }
+
+.model-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+.model-select:focus { border-color: var(--accent); }
+
+.status-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #0d1117;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.status-badge.ok { border-color: var(--accent2); color: var(--accent2); }
+.status-badge.err { border-color: #f85149; color: #f85149; }
+
+/* ── Chat area ── */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+.chat-area::-webkit-scrollbar { width: 4px; }
+.chat-area::-webkit-scrollbar-track { background: transparent; }
+.chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Messages ── */
+.msg {
+  display: flex;
+  gap: 12px;
+  animation: fadeUp 0.25s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg.user { flex-direction: row-reverse; }
+
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.msg.user .avatar { background: var(--user-bg); border-color: var(--user-bg); }
+
+.bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.msg.user .bubble {
+  background: var(--user-bg);
+  border-bottom-right-radius: 4px;
+}
+.msg.ai .bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+/* Code blocks inside messages */
+.bubble pre {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+.bubble code {
+  font-family: 'Courier New', monospace;
+  background: #0d1117;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.bubble pre code { background: none; padding: 0; }
+
+.msg-meta {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+.msg.user .msg-meta { text-align: right; }
+
+/* ── File attachment chip ── */
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1f2937;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── Typing indicator ── */
+.typing {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+.typing.show { display: flex; }
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: typingAnim 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingAnim {
+  0%, 80%, 100% { transform: scale(1); opacity: 0.5; }
+  40% { transform: scale(1.3); opacity: 1; }
+}
+
+/* ── Welcome ── */
+.welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--muted);
+  text-align: center;
+  padding: 40px;
+}
+.welcome-icon { font-size: 48px; }
+.welcome h2 { color: var(--accent); font-size: 20px; }
+.welcome p { font-size: 13px; max-width: 400px; line-height: 1.6; }
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Bottom bar ── */
+.bottom-bar {
+  flex-shrink: 0;
+  padding: 12px 20px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+/* File previews */
+.file-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.file-remove {
+  cursor: pointer;
+  color: #f85149;
+  font-size: 14px;
+  line-height: 1;
+}
+.file-remove:hover { color: #ff6b6b; }
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.attach-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s;
+}
+.attach-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.input-wrap {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  padding: 4px;
+  transition: border-color 0.2s;
+}
+.input-wrap:focus-within { border-color: var(--accent); }
+
+#msgInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  padding: 8px 10px;
+  outline: none;
+  resize: none;
+  max-height: 150px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.send-btn {
+  background: var(--accent);
+  border: none;
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.1s;
+  margin: 2px;
+}
+.send-btn:hover { background: #79c0ff; }
+.send-btn:active { transform: scale(0.95); }
+.send-btn:disabled { background: var(--border); cursor: not-allowed; }
+
+.hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+/* Hidden file input */
+#fileInput { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-logo">✨</div>
+  <div>
+    <div class="topbar-title">PuterAI Chat</div>
+    <div class="topbar-sub">Free unlimited AI — powered by Puter.js</div>
+  </div>
+  <div class="spacer"></div>
+  <select class="model-select" id="modelSelect">
+    <option value="claude-opus-4-7">Claude Opus 4.7 🧠</option>
+    <option value="claude-sonnet-4-6" selected>Claude Sonnet 4.6 ⚡</option>
+    <option value="claude-haiku-4-5">Claude Haiku 4.5 🚀</option>
+    <option value="gpt-4o">GPT-4o 🤖</option>
+    <option value="gpt-4o-mini">GPT-4o Mini 🪶</option>
+  </select>
+  <div class="status-badge" id="authBadge">⏳ Checking...</div>
+</div>
+
+<!-- Chat area -->
+<div class="chat-area" id="chatArea">
+  <div class="welcome" id="welcome">
+    <div class="welcome-icon">🤖</div>
+    <h2>PuterAI Chat</h2>
+    <p>Free unlimited access to Claude Opus 4.7, Claude Sonnet, GPT-4o and more — no API keys needed.</p>
+    <div class="suggestion-chips">
+      <div class="chip" onclick="sendSuggestion('Explain quantum computing simply')">Explain quantum computing</div>
+      <div class="chip" onclick="sendSuggestion('Write a Python web scraper')">Python web scraper</div>
+      <div class="chip" onclick="sendSuggestion('What are the latest AI trends in 2026?')">AI trends 2026</div>
+      <div class="chip" onclick="sendSuggestion('Write a haiku about coding')">Haiku about coding</div>
+    </div>
+  </div>
+</div>
+
+<!-- Typing indicator -->
+<div style="padding: 0 20px 8px;">
+  <div class="typing" id="typingIndicator">
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:20px;padding:8px 14px;display:flex;gap:4px;align-items:center;">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom input bar -->
+<div class="bottom-bar">
+  <div class="file-previews" id="filePreviews"></div>
+  <div class="input-row">
+    <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">📎</button>
+    <input type="file" id="fileInput" multiple accept="*/*">
+    <div class="input-wrap">
+      <textarea id="msgInput" rows="1" placeholder="Message Claude Opus 4.7... (Shift+Enter for newline)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+  <div class="hint">Powered by Puter.js — <a href="/bridge" style="color:#58a6ff" target="_blank">bridge.html</a> also serves as API for Python</div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let chatHistory  = [];   // [{role, content}, ...]
+let attachedFiles = [];  // [{name, content, type}, ...]
+let isGenerating  = false;
+
+// ── Auth check ────────────────────────────────────────────────────────────────
+async function checkAuth() {
+  try {
+    const user = await puter.auth.getUser();
+    if (user?.username) {
+      document.getElementById('authBadge').className   = 'status-badge ok';
+      document.getElementById('authBadge').textContent = `✅ @${user.username}`;
+      return true;
+    }
+  } catch(e) {}
+
+  document.getElementById('authBadge').className   = 'status-badge err';
+  document.getElementById('authBadge').textContent = '⚠️ Not logged in';
+
+  // Auto-prompt login
+  try {
+    await puter.auth.signIn();
+    return checkAuth();
+  } catch(e) {
+    return false;
+  }
+}
+
+// ── File handling ─────────────────────────────────────────────────────────────
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files);
+  for (const file of files) {
+    const content = await readFileContent(file);
+    attachedFiles.push({ name: file.name, content, type: file.type });
+    renderFilePreviews();
+  }
+  e.target.value = '';
+});
+
+async function readFileContent(file) {
+  return new Promise((resolve) => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsText(file);
+    }
+  });
+}
+
+function renderFilePreviews() {
+  const container = document.getElementById('filePreviews');
+  container.innerHTML = '';
+  attachedFiles.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'file-preview';
+    div.innerHTML = `📄 ${f.name} <span class="file-remove" onclick="removeFile(${i})">✕</span>`;
+    container.appendChild(div);
+  });
+}
+
+function removeFile(index) {
+  attachedFiles.splice(index, 1);
+  renderFilePreviews();
+}
+
+// ── Auto-resize textarea ──────────────────────────────────────────────────────
+const input = document.getElementById('msgInput');
+input.addEventListener('input', () => {
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 150) + 'px';
+});
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// ── Build message content with files ─────────────────────────────────────────
+function buildUserContent(text) {
+  if (!attachedFiles.length) return text;
+
+  let content = text + '\n\n';
+  attachedFiles.forEach(f => {
+    if (f.type.startsWith('image/')) {
+      content += `[Image attached: ${f.name}]\n`;
+    } else {
+      const truncated = f.content.length > 8000
+        ? f.content.slice(0, 8000) + '\n... (truncated)'
+        : f.content;
+      content += `\n---\nFile: ${f.name}\n\`\`\`\n${truncated}\n\`\`\`\n`;
+    }
+  });
+  return content;
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+function renderMarkdown(text) {
+  // Basic markdown rendering
+  return text
+    .replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
+      `<pre><code class="language-${lang}">${escHtml(code.trim())}</code></pre>`)
+    .replace(/`([^`]+)`/g,   (_, c)  => `<code>${escHtml(c)}</code>`)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,     '<em>$1</em>')
+    .replace(/^### (.+)$/gm,   '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,    '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,     '<h1>$1</h1>')
+    .replace(/\n/g,            '<br>');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function appendMessage(role, content, fileNames = []) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const area  = document.getElementById('chatArea');
+  const div   = document.createElement('div');
+  div.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
+
+  const avatar = role === 'user' ? '👤' : '🤖';
+  const time   = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const html   = role === 'user' ? escHtml(content) : renderMarkdown(content);
+
+  const fileChips = fileNames.map(n =>
+    `<div class="file-chip">📄 ${escHtml(n)}</div>`).join('');
+
+  div.innerHTML = `
+    <div class="avatar">${avatar}</div>
+    <div>
+      <div class="bubble">${html}${fileChips ? '<br>' + fileChips : ''}</div>
+      <div class="msg-meta">${time} · ${document.getElementById('modelSelect').value}</div>
+    </div>`;
+
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+function showTyping(show) {
+  document.getElementById('typingIndicator').className = `typing${show ? ' show' : ''}`;
+}
+
+// ── Send message ──────────────────────────────────────────────────────────────
+async function sendMessage() {
+  if (isGenerating) return;
+  const text = input.value.trim();
+  if (!text && !attachedFiles.length) return;
+
+  const model      = document.getElementById('modelSelect').value;
+  const fullContent = buildUserContent(text || '(files attached)');
+  const fileNames  = attachedFiles.map(f => f.name);
+
+  // Show user message
+  appendMessage('user', text || '(files attached)', fileNames);
+
+  // Clear input
+  input.value      = '';
+  input.style.height = 'auto';
+  attachedFiles    = [];
+  renderFilePreviews();
+
+  // Add to history
+  chatHistory.push({ role: 'user', content: fullContent });
+
+  // Generate
+  isGenerating = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping(true);
+
+  try {
+    const response = await puter.ai.chat(chatHistory, { model, stream: false });
+
+    let aiText = '';
+    if (typeof response === 'string') {
+      aiText = response;
+    } else if (response?.message?.content) {
+      const c = response.message.content;
+      aiText = typeof c === 'string' ? c :
+               Array.isArray(c) ? c.filter(x=>x.type==='text').map(x=>x.text).join('') : '';
+    } else if (response?.text) {
+      aiText = response.text;
+    }
+
+    chatHistory.push({ role: 'assistant', content: aiText });
+    showTyping(false);
+    appendMessage('ai', aiText);
+
+  } catch(err) {
+    showTyping(false);
+    appendMessage('ai', `❌ Error: ${err.message}\n\nMake sure you're logged into Puter.`);
+  }
+
+  isGenerating = false;
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+function sendSuggestion(text) {
+  input.value = text;
+  sendMessage();
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+checkAuth();
+input.focus();
+</script>
+</body>
+</html>
