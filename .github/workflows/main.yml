@@ -78,6 +78,7 @@ jobs:
             echo "🔗 **Bridge:** $PUBLIC_URL/bridge  "
             echo "💬 **Chat UI:** $PUBLIC_URL/chat  "
             echo "📄 **API Docs:** $PUBLIC_URL/docs  "
+            echo "🌐 **API Endpoint:** $PUBLIC_URL/v1  "
             echo "⏱️ *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*  "
             echo "$END"
           } >> README.md
