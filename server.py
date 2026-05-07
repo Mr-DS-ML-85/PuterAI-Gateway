@@ -3,6 +3,7 @@
 PuterAI Gateway — OpenAI-compatible API powered by Puter.js (no API keys needed)
 Architecture: Python API ←→ bridge.html (browser) ←→ puter.ai.chat()
 """
+from fastapi import Request
 import uuid, asyncio, time, json, os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -204,13 +205,14 @@ async def post_result(data: dict):
     return {"status": "ok"}
 
 @app.get("/api/status")
-async def api_status():
+async def api_status(request: Request):
+    origin = str(request.base_url).rstrip("/")
     return {
         "server":          "running",
         "bridge_connected": bridge_is_connected(),
         "pending_requests": len(pending_queue),
-        "api_base":        "http://localhost:8000/v1",
-        "bridge_url":      "http://localhost:8000/bridge",
+        "api_base":        f"{origin}/v1",
+        "bridge_url":      f"{origin}/bridge",
     }
 
 # ── Serve static files ────────────────────────────────────────────────────────
