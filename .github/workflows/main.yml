@@ -24,23 +24,23 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # ── Start public tunnel via localhost.run (no binary, no auth) ──
-      - name: Start ssh tunnel (localhost.run)
+      # ── Start Cloudflare Quick Tunnel (outbound HTTPS, no auth) ───────
+      - name: Start Cloudflare tunnel
         run: |
-          # localhost.run output format (verified from StackOverflow #71348854):
-          #   255a9142244f36.lhrtunnel.link tunneled with tls termination, https://255a9142244f36.lhrtunnel.link
-          #
-          ssh -o StrictHostKeyChecking=no \
-              -R 80:localhost:8000 \
-              nokey@localhost.run > tunnel.log 2>&1 &
-          sleep 10
+          # Download cloudflared binary
+          curl -sL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
 
-          # Extract the https:// URL using sed (proven pattern)
-          PUBLIC_URL=$(sed -n 's/.*tunneled with tls termination, //p' tunnel.log)
+          # Start tunnel in background
+          ./cloudflared tunnel --url http://localhost:8000 > tunnel.log 2>&1 &
+          sleep 8   # wait for the tunnel to establish and print the URL
+
+          # Extract the trycloudflare.com URL from the log
+          PUBLIC_URL=$(grep -oP 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' tunnel.log | head -1)
 
           if [ -z "$PUBLIC_URL" ]; then
-            echo "⚠️  Tunnel failed – falling back to direct URL"
-            PUBLIC_URL="https://tunnel-not-detected.lhrtunnel.link"
+            echo "⚠️  Tunnel failed – using fallback"
+            PUBLIC_URL="https://tunnel-not-detected.trycloudflare.com"
           fi
 
           echo "=========================================="
@@ -51,26 +51,24 @@ jobs:
           echo "=========================================="
           echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
 
-      # ── Save public URL to JSON (used by get-started.html) ──────────
+      # ── Save public URL to JSON (used by get-started.html) ────────────
       - name: Save public URL to JSON
         run: |
           echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
 
-      # ── Update get-started.html with real repo path ─────────────────
+      # ── Update get-started.html with real repo path ───────────────────
       - name: Fix repository placeholder in get-started.html
         run: |
           sed -i "s|YOUR_USERNAME/YOUR_REPO|${{ github.repository }}|g" get-started.html
 
-      # ── Update README.md live server block ──────────────────────────
+      # ── Update README.md live server block ────────────────────────────
       - name: Update README with live server URLs
         run: |
           START="<!-- LIVE_URL_START -->"
           END="<!-- LIVE_URL_END -->"
 
-          # Remove any previous live block (between START and END)
           sed -i "/$START/,/$END/d" README.md
 
-          # Append the new live block at the end of the README
           {
             echo ""
             echo "$START"
@@ -83,6 +81,7 @@ jobs:
             echo "$END"
           } >> README.md
 
+      # ── Update test_api.py with live base URL ─────────────────────────
       - name: Update test_api.py with live base URL
         run: |
           sed -i "s|^BASE_URL = .*|BASE_URL = \"$PUBLIC_URL/v1\"|" test_api.py
@@ -91,10 +90,10 @@ jobs:
       - name: Commit updated files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🌐 Update public tunnel URL, README, and get-started"
-          file_pattern: 'public_url.json README.md get-started.html'
+          commit_message: "🌐 Update public tunnel URL, README, test_api, and get-started"
+          file_pattern: 'public_url.json README.md get-started.html test_api.py'
 
-      # ── Run server with 5‑hour restart loop ─────────────────────────
+      # ── Run server with 5‑hour restart loop ──────────────────────────
       - name: Run server (5‑hour cycle)
         run: |
           RUN_SECONDS=18000   # 5 hours
