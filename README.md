@@ -215,10 +215,11 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://38d1aaaa20feb3.lhr.life  
-🔗 **Bridge:** https://38d1aaaa20feb3.lhr.life/bridge  
-💬 **Chat UI:** https://38d1aaaa20feb3.lhr.life/chat  
-📄 **API Docs:** https://38d1aaaa20feb3.lhr.life/docs  
-⏱️ *Updated: 2026-05-07 06:41:02 UTC*  
+🌐 **Live Server URL:** https://71cf8c95e195fe.lhr.life  
+🔗 **Bridge:** https://71cf8c95e195fe.lhr.life/bridge  
+💬 **Chat UI:** https://71cf8c95e195fe.lhr.life/chat  
+📄 **API Docs:** https://71cf8c95e195fe.lhr.life/docs  
+⏱️ *Updated: 2026-05-07 06:44:47 UTC*  
 <!-- LIVE_URL_END -->
