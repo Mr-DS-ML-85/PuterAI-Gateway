@@ -226,11 +226,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://piano-anne-andreas-therapist.trycloudflare.com  
-🔗 **Bridge:** https://piano-anne-andreas-therapist.trycloudflare.com/bridge  
-💬 **Chat UI:** https://piano-anne-andreas-therapist.trycloudflare.com/chat  
-📄 **API Docs:** https://piano-anne-andreas-therapist.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://piano-anne-andreas-therapist.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 08:01:01 UTC*  
+🌐 **Live Server URL:** https://bedrooms-speeches-serial-das.trycloudflare.com  
+🔗 **Bridge:** https://bedrooms-speeches-serial-das.trycloudflare.com/bridge  
+💬 **Chat UI:** https://bedrooms-speeches-serial-das.trycloudflare.com/chat  
+📄 **API Docs:** https://bedrooms-speeches-serial-das.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://bedrooms-speeches-serial-das.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 08:32:33 UTC*  
 <!-- LIVE_URL_END -->
