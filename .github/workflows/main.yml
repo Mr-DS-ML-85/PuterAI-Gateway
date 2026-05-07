@@ -1,17 +1,17 @@
 name: PuterAI Gateway — Auto Restart Loop
 
 on:
-  workflow_dispatch:          # start manually from Actions tab
+  workflow_dispatch:
   push:
     branches: [ main ]
 
 permissions:
-  contents: write             # needed for pushing commits with GITHUB_TOKEN
+  contents: write
 
 jobs:
   run-gateway:
     runs-on: ubuntu-latest
-    timeout-minutes: 360      # 6‑hour GitHub limit
+    timeout-minutes: 360
 
     steps:
       - uses: actions/checkout@v4
@@ -24,27 +24,20 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # ── Start bore tunnel (free, no auth) ─────────────────────────────
-      - name: Start bore tunnel
+      # ── Start public tunnel via localhost.run (SSH, no binary needed) ─
+      - name: Start ssh tunnel (localhost.run)
         run: |
-          BORE_VERSION="0.6.0"
-          BORE_TAR="bore-v${BORE_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-          BORE_URL="https://github.com/ekzhang/bore/releases/download/v${BORE_VERSION}/${BORE_TAR}"
+          # Start the tunnel in the background and capture its output
+          ssh -o StrictHostKeyChecking=no -R 80:localhost:8000 nokey@localhost.run > tunnel.log 2>&1 &
+          # Wait a bit for the tunnel to establish
+          sleep 10
 
-          wget -q "$BORE_URL" -O "$BORE_TAR"
-          tar -xzf "$BORE_TAR" bore
-          chmod +x bore
-          ./bore local 8000 --to bore.pub > bore.log 2>&1 &
-          sleep 5
+          # Extract the public URL (starts with https://)
+          PUBLIC_URL=$(grep -oP 'https://\S+' tunnel.log | head -1)
 
-          # Extract the host only (no http://)
-          BORE_HOST=$(grep -oP 'at https?://\K[^ ]+' bore.log | head -1)
-
-          if [ -n "$BORE_HOST" ]; then
-            PUBLIC_URL="http://${BORE_HOST}"
-          else
-            # Fallback to direct IP (likely not reachable externally)
-            PUBLIC_URL="http://$(curl -s https://api.ipify.org):8000"
+          # If no URL found, fallback (rare)
+          if [ -z "$PUBLIC_URL" ]; then
+            PUBLIC_URL="https://tunnel-not-detected.localhost.run"
           fi
 
           echo "=========================================="
@@ -55,12 +48,12 @@ jobs:
           echo "=========================================="
           echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
 
-      # ── Save public URL to JSON (used by landing page) ────────────────
+      # ── Save public URL to JSON (used by get-started.html) ────────────
       - name: Save public URL to JSON
         run: |
           echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
 
-      # ── Update get-started.html with actual repo path ─────────────────
+      # ── Update get-started.html with real repo path ───────────────────
       - name: Fix repository placeholder in get-started.html
         run: |
           sed -i "s|YOUR_USERNAME/YOUR_REPO|${{ github.repository }}|g" get-started.html
@@ -71,18 +64,20 @@ jobs:
           START="<!-- LIVE_URL_START -->"
           END="<!-- LIVE_URL_END -->"
 
-          LIVE_BLOCK="$START
-          🌐 **Live Server URL:** $PUBLIC_URL
-          🔗 **Bridge:** $PUBLIC_URL/bridge
-          💬 **Chat UI:** $PUBLIC_URL/chat
-          📄 **API Docs:** $PUBLIC_URL/docs
-          ⏱️ *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*
-          $END"
-
-          # Remove existing live block completely
+          # Remove any previous live block (between START and END)
           sed -i "/$START/,/$END/d" README.md
+
           # Append the new live block at the end of the README
-          echo -e "\n$LIVE_BLOCK" >> README.md
+          {
+            echo ""
+            echo "$START"
+            echo "🌐 **Live Server URL:** $PUBLIC_URL  "
+            echo "🔗 **Bridge:** $PUBLIC_URL/bridge  "
+            echo "💬 **Chat UI:** $PUBLIC_URL/chat  "
+            echo "📄 **API Docs:** $PUBLIC_URL/docs  "
+            echo "⏱️ *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*  "
+            echo "$END"
+          } >> README.md
 
       # ── Commit and push all changes ────────────────────────────────────
       - name: Commit updated files
