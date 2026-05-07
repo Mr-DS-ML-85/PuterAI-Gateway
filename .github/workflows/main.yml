@@ -57,9 +57,9 @@ jobs:
           echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
 
       # ── Update get-started.html with real repo path ───────────────────
-      - name: Fix repository placeholder in get-started.html
+      - name: Update bridge.html with live server URL
         run: |
-          sed -i "s|YOUR_USERNAME/YOUR_REPO|${{ github.repository }}|g" get-started.html
+          sed -i "s|const SERVER = .*|const SERVER = '$PUBLIC_URL';|" bridge.html
 
       # ── Update README.md live server block ────────────────────────────
       - name: Update README with live server URLs
