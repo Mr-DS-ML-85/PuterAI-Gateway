@@ -202,6 +202,17 @@ In practice, Puter’s free tier has **undocumented per-account daily limits** (
 The creators of this project are **not affiliated with Puter.js** and provide this gateway as a community tool – use it at your own risk. No guarantees of uptime, model quality, or availability are made.
 
 ---
+## Test on Github Pages
+
+<!-- LIVE_URL_START -->
+🌐 **Live Server URL:** https://71cf8c95e195fe.lhr.life  
+🔗 **Bridge:** https://71cf8c95e195fe.lhr.life/bridge  
+💬 **Chat UI:** https://71cf8c95e195fe.lhr.life/chat  
+📄 **API Docs:** https://71cf8c95e195fe.lhr.life/docs  
+⏱️ *Updated: 2026-05-07 06:44:47 UTC*  
+<!-- LIVE_URL_END -->
+---
+
 ## License
 
 MIT License
@@ -212,14 +223,3 @@ MIT License
 Issues and pull requests welcome!
 
 
-
-
-
-
-<!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://71cf8c95e195fe.lhr.life  
-🔗 **Bridge:** https://71cf8c95e195fe.lhr.life/bridge  
-💬 **Chat UI:** https://71cf8c95e195fe.lhr.life/chat  
-📄 **API Docs:** https://71cf8c95e195fe.lhr.life/docs  
-⏱️ *Updated: 2026-05-07 06:44:47 UTC*  
-<!-- LIVE_URL_END -->
