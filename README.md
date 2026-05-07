@@ -211,9 +211,11 @@ MIT License
 
 Issues and pull requests welcome!
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** http://http://http://52.159.227.195:8000  
-🔗 **Bridge:** http://http://http://52.159.227.195:8000/bridge  
-💬 **Chat UI:** http://http://http://52.159.227.195:8000/chat  
-⏱️ *Updated: 2026-05-07 06:15:02 UTC*
+🌐 **Live Server URL:** http://52.162.9.246:8000
+🔗 **Bridge:** http://52.162.9.246:8000/bridge
+💬 **Chat UI:** http://52.162.9.246:8000/chat
+📄 **API Docs:** http://52.162.9.246:8000/docs
+⏱️ *Updated: 2026-05-07 06:24:51 UTC*
 <!-- LIVE_URL_END -->
