@@ -215,12 +215,13 @@ Issues and pull requests welcome!
 
 ## Test on Github Pages
 
-<!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://82d5818227f965.lhr.life  
-🔗 **Bridge:** https://82d5818227f965.lhr.life/bridge  
-💬 **Chat UI:** https://82d5818227f965.lhr.life/chat  
-📄 **API Docs:** https://82d5818227f965.lhr.life/docs  
-🌐 **API Endpoint:** https://82d5818227f965.lhr.life/v1  
-⏱️ *Updated: 2026-05-07 06:51:51 UTC*  
-<!-- LIVE_URL_END -->
  ---
+
+<!-- LIVE_URL_START -->
+🌐 **Live Server URL:** https://tunnel-not-detected.lhrtunnel.link  
+🔗 **Bridge:** https://tunnel-not-detected.lhrtunnel.link/bridge  
+💬 **Chat UI:** https://tunnel-not-detected.lhrtunnel.link/chat  
+📄 **API Docs:** https://tunnel-not-detected.lhrtunnel.link/docs  
+🌐 **API Endpoint:** https://tunnel-not-detected.lhrtunnel.link/v1  
+⏱️ *Updated: 2026-05-07 06:54:57 UTC*  
+<!-- LIVE_URL_END -->
