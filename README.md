@@ -146,6 +146,7 @@ for chunk in stream:
 ├── server.py        # FastAPI server (OpenAI‑compatible endpoints)
 ├── bridge.html      # Bridge page (open in browser — handles AI calls)
 ├── chatbot.html     # Chat UI (optional — direct Puter.js chat interface)
+├── requirements.txt # Dependency
 └── README.md   # This file
 ```
 
