@@ -83,6 +83,10 @@ jobs:
             echo "$END"
           } >> README.md
 
+      - name: Update test_api.py with live base URL
+        run: |
+          sed -i "s|^BASE_URL = .*|BASE_URL = \"$PUBLIC_URL/v1\"|" test_api.py
+
       # ── Commit and push all changes ──────────────────────────────────
       - name: Commit updated files
         uses: stefanzweifel/git-auto-commit-action@v5
