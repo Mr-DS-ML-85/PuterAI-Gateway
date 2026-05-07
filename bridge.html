@@ -194,7 +194,7 @@
   </div>
 
   <div class="api-info">
-    📡 Use this in Python: <code>base_url="http://localhost:8000/v1"</code> &nbsp;|&nbsp;
+    📡 Use this in Python: <code>base_url="<span id="apiBaseUrl"></span>/v1"</code>
     <code>api_key="no-key-needed"</code>
   </div>
 </div>
@@ -206,7 +206,7 @@
 </div>
 
 <script>
-const SERVER = 'http://localhost:8000';
+const SERVER = window.location.origin;
 let totalCount  = 0;
 let errorCount  = 0;
 let isPolling   = false;
@@ -358,6 +358,7 @@ async function poll() {
   await checkPuter();
   log('Starting poll loop…', 'info');
   poll();
+  document.getElementById('apiBaseUrl').textContent = SERVER;
 })();
 </script>
 </body>
