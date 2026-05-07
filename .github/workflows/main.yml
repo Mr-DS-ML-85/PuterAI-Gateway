@@ -28,7 +28,7 @@ jobs:
       # ── Start bore tunnel (free, no auth) ─────────────────────────
       - name: Start bore tunnel
         run: |
-          wget -q -O bore https://github.com/ekzhang/bore/releases/latest/download/bore-x86_64-unknown-linux-musl
+          wget -q -O bore https://api.github.com/repos/ekzhang/bore/releases/latest/bore-x86_64-unknown-linux-musl
           chmod +x bore
           ./bore local 8000 --to bore.pub > bore.log 2>&1 &
           sleep 5
