@@ -210,3 +210,10 @@ MIT License
 ## Contributing
 
 Issues and pull requests welcome!
+
+<!-- LIVE_URL_START -->
+🌐 **Live Server URL:** http://http://http://52.159.227.195:8000  
+🔗 **Bridge:** http://http://http://52.159.227.195:8000/bridge  
+💬 **Chat UI:** http://http://http://52.159.227.195:8000/chat  
+⏱️ *Updated: 2026-05-07 06:15:02 UTC*
+<!-- LIVE_URL_END -->
