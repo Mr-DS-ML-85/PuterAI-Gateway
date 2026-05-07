@@ -18,7 +18,7 @@ except ImportError:
     from openai import OpenAI
 
 # ── Config ────────────────────────────────────────────────────────────────────
-BASE_URL = "http://localhost:8000/v1"
+BASE_URL = "https://investigators-spray-periods-implemented.trycloudflare.com/v1"
 API_KEY  = "no-key-needed"   # Puter doesn't need one
 
 def test_models(client):

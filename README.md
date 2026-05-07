@@ -222,11 +222,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://tunnel-not-detected.lhrtunnel.link  
-🔗 **Bridge:** https://tunnel-not-detected.lhrtunnel.link/bridge  
-💬 **Chat UI:** https://tunnel-not-detected.lhrtunnel.link/chat  
-📄 **API Docs:** https://tunnel-not-detected.lhrtunnel.link/docs  
-🌐 **API Endpoint:** https://tunnel-not-detected.lhrtunnel.link/v1  
-⏱️ *Updated: 2026-05-07 07:09:12 UTC*  
+🌐 **Live Server URL:** https://investigators-spray-periods-implemented.trycloudflare.com  
+🔗 **Bridge:** https://investigators-spray-periods-implemented.trycloudflare.com/bridge  
+💬 **Chat UI:** https://investigators-spray-periods-implemented.trycloudflare.com/chat  
+📄 **API Docs:** https://investigators-spray-periods-implemented.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://investigators-spray-periods-implemented.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 07:16:20 UTC*  
 <!-- LIVE_URL_END -->
