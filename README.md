@@ -223,11 +223,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://investigators-spray-periods-implemented.trycloudflare.com  
-🔗 **Bridge:** https://investigators-spray-periods-implemented.trycloudflare.com/bridge  
-💬 **Chat UI:** https://investigators-spray-periods-implemented.trycloudflare.com/chat  
-📄 **API Docs:** https://investigators-spray-periods-implemented.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://investigators-spray-periods-implemented.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 07:16:20 UTC*  
+🌐 **Live Server URL:** https://douglas-answers-explained-factory.trycloudflare.com  
+🔗 **Bridge:** https://douglas-answers-explained-factory.trycloudflare.com/bridge  
+💬 **Chat UI:** https://douglas-answers-explained-factory.trycloudflare.com/chat  
+📄 **API Docs:** https://douglas-answers-explained-factory.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://douglas-answers-explained-factory.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 07:57:30 UTC*  
 <!-- LIVE_URL_END -->
