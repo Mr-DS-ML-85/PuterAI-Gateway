@@ -217,10 +217,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://05bbd640ff4a76.lhr.life  
-🔗 **Bridge:** https://05bbd640ff4a76.lhr.life/bridge  
-💬 **Chat UI:** https://05bbd640ff4a76.lhr.life/chat  
-📄 **API Docs:** https://05bbd640ff4a76.lhr.life/docs  
-⏱️ *Updated: 2026-05-07 06:47:57 UTC*  
+🌐 **Live Server URL:** https://82d5818227f965.lhr.life  
+🔗 **Bridge:** https://82d5818227f965.lhr.life/bridge  
+💬 **Chat UI:** https://82d5818227f965.lhr.life/chat  
+📄 **API Docs:** https://82d5818227f965.lhr.life/docs  
+🌐 **API Endpoint:** https://82d5818227f965.lhr.life/v1  
+⏱️ *Updated: 2026-05-07 06:51:51 UTC*  
 <!-- LIVE_URL_END -->
