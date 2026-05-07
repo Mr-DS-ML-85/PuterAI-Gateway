@@ -102,11 +102,12 @@ async def list_models():
 @app.post("/chat/completions")
 async def chat_completions(request: ChatRequest):
     if not bridge_is_connected():
+        origin = str(request.base_url).rstrip("/") 
         raise HTTPException(
             status_code=503,
             detail=(
                 "Bridge not connected. Open bridge.html in your browser first! "
-                "Run: open http://localhost:8000/bridge"
+                 f"Run: open {origin}/bridge" 
             )
         )
 
@@ -237,7 +238,7 @@ async def root():
   <li><a href="/docs"   style="color:#58a6ff">📖 API Docs (Swagger)</a></li>
   <li><a href="/api/status" style="color:#58a6ff">📊 Status JSON</a></li>
 </ul>
-<p style="color:#8b949e">API base URL for Python: <code style="color:#e6edf3">http://localhost:8000/v1</code></p>
+<p style="color:#8b949e">API base URL for Python: <code style="color:#e6edf3">{origin}/v1</code></p>
 </body></html>
 """)
 
