@@ -147,6 +147,7 @@ for chunk in stream:
 ├── bridge.html      # Bridge page (open in browser — handles AI calls)
 ├── chatbot.html     # Chat UI (optional — direct Puter.js chat interface)
 ├── requirements.txt # Dependency
+├── test_api.py # API testing
 └── README.md   # This file
 ```
 
