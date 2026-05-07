@@ -28,22 +28,28 @@ jobs:
       # ── Start bore tunnel (free, no auth) ─────────────────────────
       - name: Start bore tunnel
         run: |
-          wget -q -O bore https://api.github.com/repos/ekzhang/bore/releases/latest/bore-x86_64-unknown-linux-musl
+          BORE_VERSION="0.6.0"
+          BORE_TAR="bore-v${BORE_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+          BORE_URL="https://github.com/ekzhang/bore/releases/download/v${BORE_VERSION}/${BORE_TAR}"
+
+          wget -q "$BORE_URL" -O "$BORE_TAR"
+          tar -xzf "$BORE_TAR" bore
           chmod +x bore
           ./bore local 8000 --to bore.pub > bore.log 2>&1 &
           sleep 5
-          BORE_URL=$(grep -oP 'at https?://\K[^ ]+' bore.log | head -1)
-          if [ -z "$BORE_URL" ]; then
-            BORE_URL="http://$(curl -s https://api.ipify.org):8000"
-          fi
-          echo "=========================================="
-          echo "  🌐  PUBLIC URL : http://$BORE_URL"
-          echo "  🔗  Bridge     : http://$BORE_URL/bridge"
-          echo "  💬  Chat UI    : http://$BORE_URL/chat"
-          echo "  📄  API Docs   : http://$BORE_URL/docs"
-          echo "=========================================="
-          echo "BORE_URL=http://$BORE_URL" >> $GITHUB_ENV
 
+          BORE_PUBLIC_URL=$(grep -oP 'at https?://\K[^ ]+' bore.log | head -1)
+          if [ -z "$BORE_PUBLIC_URL" ]; then
+            BORE_PUBLIC_URL="http://$(curl -s https://api.ipify.org):8000"
+          fi
+
+          echo "=========================================="
+          echo "  🌐  PUBLIC URL : http://$BORE_PUBLIC_URL"
+          echo "  🔗  Bridge     : http://$BORE_PUBLIC_URL/bridge"
+          echo "  💬  Chat UI    : http://$BORE_PUBLIC_URL/chat"
+          echo "  📄  API Docs   : http://$BORE_PUBLIC_URL/docs"
+          echo "=========================================="
+          echo "BORE_URL=http://$BORE_PUBLIC_URL" >> $GITHUB_ENV
       # ── Save public URL to JSON (used by get-started.html) ───────
       - name: Save public URL to JSON
         run: |
