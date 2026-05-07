@@ -231,11 +231,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://compiled-granted-canvas-landing.trycloudflare.com  
-🔗 **Bridge:** https://compiled-granted-canvas-landing.trycloudflare.com/bridge  
-💬 **Chat UI:** https://compiled-granted-canvas-landing.trycloudflare.com/chat  
-📄 **API Docs:** https://compiled-granted-canvas-landing.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://compiled-granted-canvas-landing.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 09:30:44 UTC*  
+🌐 **Live Server URL:** https://stevens-demanding-budapest-para.trycloudflare.com  
+🔗 **Bridge:** https://stevens-demanding-budapest-para.trycloudflare.com/bridge  
+💬 **Chat UI:** https://stevens-demanding-budapest-para.trycloudflare.com/chat  
+📄 **API Docs:** https://stevens-demanding-budapest-para.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://stevens-demanding-budapest-para.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-07 09:34:18 UTC*  
 <!-- LIVE_URL_END -->
