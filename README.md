@@ -213,10 +213,11 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://twitter.com/localhost_run].  
-🔗 **Bridge:** https://twitter.com/localhost_run]./bridge  
-💬 **Chat UI:** https://twitter.com/localhost_run]./chat  
-📄 **API Docs:** https://twitter.com/localhost_run]./docs  
-⏱️ *Updated: 2026-05-07 06:28:15 UTC*  
+🌐 **Live Server URL:** https://f655763bcdf729.lhr.life  
+🔗 **Bridge:** https://f655763bcdf729.lhr.life/bridge  
+💬 **Chat UI:** https://f655763bcdf729.lhr.life/chat  
+📄 **API Docs:** https://f655763bcdf729.lhr.life/docs  
+⏱️ *Updated: 2026-05-07 06:32:46 UTC*  
 <!-- LIVE_URL_END -->
