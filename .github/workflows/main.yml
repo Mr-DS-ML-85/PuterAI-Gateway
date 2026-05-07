@@ -24,20 +24,23 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # ── Start public tunnel via localhost.run (SSH, no binary needed) ─
+      # ── Start public tunnel via localhost.run (no binary, no auth) ──
       - name: Start ssh tunnel (localhost.run)
         run: |
-          # Start the tunnel in the background and capture its output
-          ssh -o StrictHostKeyChecking=no -R 80:localhost:8000 nokey@localhost.run > tunnel.log 2>&1 &
-          # Wait a bit for the tunnel to establish
+          # localhost.run output format (verified from StackOverflow #71348854):
+          #   255a9142244f36.lhrtunnel.link tunneled with tls termination, https://255a9142244f36.lhrtunnel.link
+          #
+          ssh -o StrictHostKeyChecking=no \
+              -R 80:localhost:8000 \
+              nokey@localhost.run > tunnel.log 2>&1 &
           sleep 10
 
-          # Extract the public URL (starts with https://)
-          PUBLIC_URL=$(grep -oP 'https://\S+' tunnel.log | head -1)
+          # Extract the https:// URL using sed (proven pattern)
+          PUBLIC_URL=$(sed -n 's/.*tunneled with tls termination, //p' tunnel.log)
 
-          # If no URL found, fallback (rare)
           if [ -z "$PUBLIC_URL" ]; then
-            PUBLIC_URL="https://tunnel-not-detected.localhost.run"
+            echo "⚠️  Tunnel failed – falling back to direct URL"
+            PUBLIC_URL="https://tunnel-not-detected.lhrtunnel.link"
           fi
 
           echo "=========================================="
@@ -48,17 +51,17 @@ jobs:
           echo "=========================================="
           echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
 
-      # ── Save public URL to JSON (used by get-started.html) ────────────
+      # ── Save public URL to JSON (used by get-started.html) ──────────
       - name: Save public URL to JSON
         run: |
           echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
 
-      # ── Update get-started.html with real repo path ───────────────────
+      # ── Update get-started.html with real repo path ─────────────────
       - name: Fix repository placeholder in get-started.html
         run: |
           sed -i "s|YOUR_USERNAME/YOUR_REPO|${{ github.repository }}|g" get-started.html
 
-      # ── Update README.md live server block ────────────────────────────
+      # ── Update README.md live server block ──────────────────────────
       - name: Update README with live server URLs
         run: |
           START="<!-- LIVE_URL_START -->"
@@ -79,14 +82,14 @@ jobs:
             echo "$END"
           } >> README.md
 
-      # ── Commit and push all changes ────────────────────────────────────
+      # ── Commit and push all changes ──────────────────────────────────
       - name: Commit updated files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "🌐 Update public tunnel URL, README, and get-started"
           file_pattern: 'public_url.json README.md get-started.html'
 
-      # ── Run server with 5‑hour restart loop ───────────────────────────
+      # ── Run server with 5‑hour restart loop ─────────────────────────
       - name: Run server (5‑hour cycle)
         run: |
           RUN_SECONDS=18000   # 5 hours
