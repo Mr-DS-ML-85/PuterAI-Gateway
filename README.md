@@ -232,11 +232,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://stevens-demanding-budapest-para.trycloudflare.com  
-🔗 **Bridge:** https://stevens-demanding-budapest-para.trycloudflare.com/bridge  
-💬 **Chat UI:** https://stevens-demanding-budapest-para.trycloudflare.com/chat  
-📄 **API Docs:** https://stevens-demanding-budapest-para.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://stevens-demanding-budapest-para.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-07 09:34:18 UTC*  
+🌐 **Live Server URL:** https://deadline-replacing-facilities-imposed.trycloudflare.com  
+🔗 **Bridge:** https://deadline-replacing-facilities-imposed.trycloudflare.com/bridge  
+💬 **Chat UI:** https://deadline-replacing-facilities-imposed.trycloudflare.com/chat  
+📄 **API Docs:** https://deadline-replacing-facilities-imposed.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://deadline-replacing-facilities-imposed.trycloudflare.com/v1  
+⏱️ *Updated: 2026-05-08 09:52:06 UTC*  
 <!-- LIVE_URL_END -->
