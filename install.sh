@@ -5,6 +5,12 @@
 # ╚══════════════════════════════════════════════════════╝
 set -e
 
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
 # check Docker is installed
 if ! command -v docker &>/dev/null; then
     echo "Docker not found. Please install Docker first."
@@ -15,7 +21,7 @@ mkdir -p puter_ai_gateway
 wget -q https://raw.githubusercontent.com/Mr-DS-ML-85/PuterAI-Gateway/main/.env -O puter_ai_gateway/.env
 wget -q https://raw.githubusercontent.com/Mr-DS-ML-85/PuterAI-Gateway/main/docker-compose.yml -O puter_ai_gateway/docker-compose.yml
 cd puter_ai_gateway
-docker-compose up -d
+docker compose up -d
 
 if [ -f .env ]; then
     set -a            # Turn on automatic exporting
