@@ -233,11 +233,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://deadline-replacing-facilities-imposed.trycloudflare.com  
-🔗 **Bridge:** https://deadline-replacing-facilities-imposed.trycloudflare.com/bridge  
-💬 **Chat UI:** https://deadline-replacing-facilities-imposed.trycloudflare.com/chat  
-📄 **API Docs:** https://deadline-replacing-facilities-imposed.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://deadline-replacing-facilities-imposed.trycloudflare.com/v1  
-⏱️ *Updated: 2026-05-08 09:52:06 UTC*  
+🌐 **Live Server URL:** https://assembled-viewers-aurora-insider.trycloudflare.com  
+🔗 **Bridge:** https://assembled-viewers-aurora-insider.trycloudflare.com/bridge  
+💬 **Chat UI:** https://assembled-viewers-aurora-insider.trycloudflare.com/chat  
+📄 **API Docs:** https://assembled-viewers-aurora-insider.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://assembled-viewers-aurora-insider.trycloudflare.com/v1  
+⏱️ *Updated: 2026-06-18 06:27:58 UTC*  
 <!-- LIVE_URL_END -->
