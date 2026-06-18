@@ -50,6 +50,16 @@ The bridge runs in a real browser tab — you log into Puter once and keep it op
 chmod +x run.sh
 ./run.sh
 ```
+
+### OR
+
+### Docker Deployment
+```
+curl -fsSL https://putergatewayai.devforge.qzz.io/install.sh | sh
+```
+
+
+
 ### 2. Open the bridge
 
 - Go to `http://localhost:8000/bridge` in your browser.
@@ -151,7 +161,14 @@ for chunk in stream:
 └── README.md   # This file
 ```
 
+## Environment Variable 
 
+
+| **.env name:**   | **Default** |
+| ------------ | ------- |
+| HOST_IP      | 0.0.0.0 |
+| HOST_PORT    | 8000    |
+| CORS_ORIGINS | *       |
 
 ---
 
@@ -217,23 +234,6 @@ Issues and pull requests welcome!
 ## Test on Github Pages
 
  ---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- LIVE_URL_START -->
 🌐 **Live Server URL:** https://assembled-viewers-aurora-insider.trycloudflare.com  
 🔗 **Bridge:** https://assembled-viewers-aurora-insider.trycloudflare.com/bridge  

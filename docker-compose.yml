@@ -1,0 +1,18 @@
+services:
+  puter-ai-gateway:
+    image: ghcr.io/mr-ds-ml-85/puter-ai-gateway:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST_PORT=${HOST_PORT}      
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - HOST_IP=${HOST_IP}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  

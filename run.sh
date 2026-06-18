@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # ╔══════════════════════════════════════════════════════╗
 # ║        PuterAI Gateway — Startup Script              ║
 # ║  Free OpenAI-compatible API via Puter.js             ║
@@ -17,6 +17,7 @@ echo -e "${BOLD}${BLUE}╔══════════════════
 echo -e "${BOLD}${BLUE}║        PuterAI Gateway — Starting Up             ║${NC}"
 echo -e "${BOLD}${BLUE}╚══════════════════════════════════════════════════╝${NC}"
 echo ""
+          # Turn off automatic exporting
 
 # ── Check Python ──────────────────────────────────────
 if ! command -v python3 &>/dev/null; then
@@ -38,8 +39,16 @@ if lsof -Pi :8000 -sTCP:LISTEN -t &>/dev/null 2>&1; then
     sleep 1
 fi
 
+if [ -f .env ]; then
+    set -a            # Turn on automatic exporting
+    source .env       # Read the file
+    set +a            # Turn off automatic exporting
+else
+    echo "Warning: .env file not found"
+fi
+
 # ── Start server ───────────────────────────────────────
-echo -e "${CYAN}🚀 Starting server on http://localhost:8000 ...${NC}"
+echo -e "${CYAN}🚀 Starting server on http://$HOST_IP:$HOST_PORT ...${NC}"
 $PYTHON server.py &
 SERVER_PID=$!
 sleep 2
@@ -52,8 +61,8 @@ fi
 echo -e "${GREEN}✅ Server running (PID $SERVER_PID)${NC}"
 
 # ── Open browser ───────────────────────────────────────
-BRIDGE_URL="http://localhost:8000/bridge"
-CHAT_URL="http://localhost:8000/chat"
+BRIDGE_URL="http://${HOST_IP}:${HOST_PORT}/bridge"
+CHAT_URL="http://${HOST_IP}:${HOST_PORT}/chat"
 
 echo ""
 echo -e "${BOLD}══════════════════════════════════════════════════${NC}"
@@ -65,7 +74,7 @@ echo -e "  ${BLUE}${CHAT_URL}${NC}"
 echo ""
 echo -e "${BOLD}  STEP 3: Use in Python${NC}"
 echo -e "  ${CYAN}from openai import OpenAI${NC}"
-echo -e "  ${CYAN}client = OpenAI(base_url='http://localhost:8000/v1', api_key='no-key')${NC}"
+echo -e "  ${CYAN}client = OpenAI(base_url='http://${HOST_IP}:${HOST_PORT}/v1', api_key='no-key')${NC}"
 echo -e "  ${CYAN}r = client.chat.completions.create(${NC}"
 echo -e "  ${CYAN}    model='claude-opus-4-7',${NC}"
 echo -e "  ${CYAN}    messages=[{'role':'user','content':'Hello!'}]${NC}"

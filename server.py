@@ -12,16 +12,21 @@ from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel, field_validator
 from typing import List, Optional, Any
 
+host_ip = os.getenv("HOST_IP", "0.0.0.0")
+host_port = int(os.getenv("HOST_PORT", "8000"))
+cors_origins = os.getenv("CORS_ORIGINS", "*").split(",") if os.getenv("CORS_ORIGINS") else ["*"]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 app = FastAPI(title="PuterAI Gateway", version="1.0.0",
               description="OpenAI-compatible API via Puter.js — no API keys needed")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["{host_ip}:{host_port}"],
 )
 
 # ── In-memory state ──────────────────────────────────────────────────────────
@@ -255,9 +260,9 @@ if __name__ == "__main__":
     print("\n" + "═"*55)
     print("  🚀  PuterAI Gateway")
     print("═"*55)
-    print("  API base:  http://localhost:8000/v1")
-    print("  Bridge:    http://localhost:8000/bridge  ← open first!")
-    print("  Chatbot:   http://localhost:8000/chat")
-    print("  API docs:  http://localhost:8000/docs")
+    print(f"  API base: http://{host_ip}:{host_port}/v1")
+    print(f"  Bridge:   http://{host_ip}:{host_port}/bridge  ← open first!")
+    print(f"  Chatbot:  http://{host_ip}:{host_port}/chat")
+    print(f"  API docs: http://{host_ip}:{host_port}/docs")
     print("═"*55 + "\n")
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="warning")
+    uvicorn.run(app, host=f"{host_ip}", port=f"{host_port}", log_level="warning")
