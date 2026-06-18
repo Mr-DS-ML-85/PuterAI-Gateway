@@ -55,7 +55,7 @@ chmod +x run.sh
 
 ### Docker Deployment
 ```
-curl -fsSL https://putergatewayai.devforge.qzz.io/install.sh | sh
+curl -fsSL https://putergatewayai.devforge.qzz.io/install.sh | bash
 ```
 
 
