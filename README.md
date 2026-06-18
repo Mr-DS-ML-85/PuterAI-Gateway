@@ -234,11 +234,33 @@ Issues and pull requests welcome!
 ## Test on Github Pages
 
  ---
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 1c3996f03b6c078f7acdb3da9414b5674daddd68
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://assembled-viewers-aurora-insider.trycloudflare.com  
-🔗 **Bridge:** https://assembled-viewers-aurora-insider.trycloudflare.com/bridge  
-💬 **Chat UI:** https://assembled-viewers-aurora-insider.trycloudflare.com/chat  
-📄 **API Docs:** https://assembled-viewers-aurora-insider.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://assembled-viewers-aurora-insider.trycloudflare.com/v1  
-⏱️ *Updated: 2026-06-18 06:27:58 UTC*  
+🌐 **Live Server URL:** https://finest-thereby-mattress-lexington.trycloudflare.com  
+🔗 **Bridge:** https://finest-thereby-mattress-lexington.trycloudflare.com/bridge  
+💬 **Chat UI:** https://finest-thereby-mattress-lexington.trycloudflare.com/chat  
+📄 **API Docs:** https://finest-thereby-mattress-lexington.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://finest-thereby-mattress-lexington.trycloudflare.com/v1  
+⏱️ *Updated: 2026-06-18 13:55:32 UTC*  
 <!-- LIVE_URL_END -->

@@ -18,7 +18,7 @@ except ImportError:
     from openai import OpenAI
 
 # ── Config ────────────────────────────────────────────────────────────────────
-BASE_URL = "https://assembled-viewers-aurora-insider.trycloudflare.com/v1"
+BASE_URL = "https://finest-thereby-mattress-lexington.trycloudflare.com/v1"
 API_KEY  = "no-key-needed"   # Puter doesn't need one
 
 def test_models(client):
