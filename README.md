@@ -234,11 +234,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://assembled-viewers-aurora-insider.trycloudflare.com  
-🔗 **Bridge:** https://assembled-viewers-aurora-insider.trycloudflare.com/bridge  
-💬 **Chat UI:** https://assembled-viewers-aurora-insider.trycloudflare.com/chat  
-📄 **API Docs:** https://assembled-viewers-aurora-insider.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://assembled-viewers-aurora-insider.trycloudflare.com/v1  
-⏱️ *Updated: 2026-06-18 06:27:58 UTC*  
+🌐 **Live Server URL:** https://candle-played-laura-present.trycloudflare.com  
+🔗 **Bridge:** https://candle-played-laura-present.trycloudflare.com/bridge  
+💬 **Chat UI:** https://candle-played-laura-present.trycloudflare.com/chat  
+📄 **API Docs:** https://candle-played-laura-present.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://candle-played-laura-present.trycloudflare.com/v1  
+⏱️ *Updated: 2026-06-18 06:55:28 UTC*  
 <!-- LIVE_URL_END -->
