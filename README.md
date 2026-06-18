@@ -235,11 +235,12 @@ Issues and pull requests welcome!
 
 
 
+
 <!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://candle-played-laura-present.trycloudflare.com  
-🔗 **Bridge:** https://candle-played-laura-present.trycloudflare.com/bridge  
-💬 **Chat UI:** https://candle-played-laura-present.trycloudflare.com/chat  
-📄 **API Docs:** https://candle-played-laura-present.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://candle-played-laura-present.trycloudflare.com/v1  
-⏱️ *Updated: 2026-06-18 06:55:28 UTC*  
+🌐 **Live Server URL:** https://finest-thereby-mattress-lexington.trycloudflare.com  
+🔗 **Bridge:** https://finest-thereby-mattress-lexington.trycloudflare.com/bridge  
+💬 **Chat UI:** https://finest-thereby-mattress-lexington.trycloudflare.com/chat  
+📄 **API Docs:** https://finest-thereby-mattress-lexington.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://finest-thereby-mattress-lexington.trycloudflare.com/v1  
+⏱️ *Updated: 2026-06-18 13:55:32 UTC*  
 <!-- LIVE_URL_END -->
