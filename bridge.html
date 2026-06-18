@@ -273,7 +273,7 @@ async function processRequest(request) {
     // Build puter-compatible message array
     const puterMessages = messages.map(m => ({
       role:    m.role,
-      content: m.content,
+      content: m.content || ' ',
     }));
 
     const response = await puter.ai.chat(puterMessages, { model });

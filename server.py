@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import List, Optional, Any
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -76,6 +76,13 @@ class Message(BaseModel):
     role: str
     content: str
 
+    @field_validator('content')
+    @classmethod
+    def content_must_not_be_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('content must not be empty or whitespace-only')
+        return v
+
 class ChatRequest(BaseModel):
     model: str = "claude-opus-4-7"
     messages: List[Message]
@@ -100,9 +107,9 @@ async def list_models():
 
 @app.post("/v1/chat/completions")
 @app.post("/chat/completions")
-async def chat_completions(request: ChatRequest):
+async def chat_completions(body: ChatRequest, fastapi_request: Request):
     if not bridge_is_connected():
-        origin = str(request.base_url).rstrip("/") 
+        origin = str(fastapi_request.base_url).rstrip("/") 
         raise HTTPException(
             status_code=503,
             detail=(
@@ -112,12 +119,12 @@ async def chat_completions(request: ChatRequest):
         )
 
     request_id   = str(uuid.uuid4())
-    puter_model  = MODEL_MAP.get(request.model, request.model)
-    messages     = [{"role": m.role, "content": m.content} for m in request.messages]
+    puter_model  = MODEL_MAP.get(body.model, body.model)
+    messages     = [{"role": m.role, "content": m.content} for m in body.messages]
 
     # Prepend system message if provided
-    if request.system:
-        messages.insert(0, {"role": "system", "content": request.system})
+    if body.system:
+        messages.insert(0, {"role": "system", "content": body.system})
 
     payload = {
         "id":        request_id,
@@ -157,7 +164,7 @@ async def chat_completions(request: ChatRequest):
         "id":      f"chatcmpl-{request_id}",
         "object":  "chat.completion",
         "created": int(time.time()),
-        "model":   request.model,
+        "model":   body.model,
         "choices": [{
             "index":         0,
             "message":       {"role": "assistant", "content": content},
