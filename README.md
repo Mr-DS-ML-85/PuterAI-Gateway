@@ -233,29 +233,6 @@ Issues and pull requests welcome!
 
 ## Test on Github Pages
 
- ---
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> 1c3996f03b6c078f7acdb3da9414b5674daddd68
 <!-- LIVE_URL_START -->
 🌐 **Live Server URL:** https://finest-thereby-mattress-lexington.trycloudflare.com  
 🔗 **Bridge:** https://finest-thereby-mattress-lexington.trycloudflare.com/bridge  
