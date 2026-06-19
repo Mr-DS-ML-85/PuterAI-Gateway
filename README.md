@@ -230,15 +230,3 @@ MIT License
 
 Issues and pull requests welcome!
 ---
-
-## Test on Github Pages
-
-
-<!-- LIVE_URL_START -->
-🌐 **Live Server URL:** https://span-installation-remain-unlock.trycloudflare.com  
-🔗 **Bridge:** https://span-installation-remain-unlock.trycloudflare.com/bridge  
-💬 **Chat UI:** https://span-installation-remain-unlock.trycloudflare.com/chat  
-📄 **API Docs:** https://span-installation-remain-unlock.trycloudflare.com/docs  
-🌐 **API Endpoint:** https://span-installation-remain-unlock.trycloudflare.com/v1  
-⏱️ *Updated: 2026-06-18 16:04:33 UTC*  
-<!-- LIVE_URL_END -->
