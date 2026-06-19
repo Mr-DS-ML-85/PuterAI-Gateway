@@ -1,147 +1,147 @@
-name: PuterAI Gateway — Auto Restart Loop
+# name: PuterAI Gateway — Auto Restart Loop
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches: [ main ]
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
-jobs:
-  run-gateway:
-    runs-on: ubuntu-latest
-    timeout-minutes: 300
-    env:
-      CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
-      CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+# jobs:
+#   run-gateway:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 300
+#     env:
+#       CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
+#       CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
 
-    steps:
-      - uses: actions/checkout@v4
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
+#       - uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.11'
+#           cache: 'pip'
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
+#       - name: Install Python dependencies
+#         run: pip install -r requirements.txt
 
-      # ── Start Cloudflare Quick Tunnel (outbound HTTPS, no auth) ───────
-      - name: Start Cloudflare tunnel
-        run: |
-          # Download cloudflared binary
-          curl -sL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
-          chmod +x cloudflared
+#       # ── Start Cloudflare Quick Tunnel (outbound HTTPS, no auth) ───────
+#       - name: Start Cloudflare tunnel
+#         run: |
+#           # Download cloudflared binary
+#           curl -sL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+#           chmod +x cloudflared
 
-          # Start tunnel in background
-          ./cloudflared tunnel --url http://localhost:8000 > tunnel.log 2>&1 &
-          sleep 8   # wait for the tunnel to establish and print the URL
+#           # Start tunnel in background
+#           ./cloudflared tunnel --url http://localhost:8000 > tunnel.log 2>&1 &
+#           sleep 8   # wait for the tunnel to establish and print the URL
 
-          # Extract the trycloudflare.com URL from the log
-          PUBLIC_URL=$(grep -oP 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' tunnel.log | head -1)
+#           # Extract the trycloudflare.com URL from the log
+#           PUBLIC_URL=$(grep -oP 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' tunnel.log | head -1)
 
-          if [ -z "$PUBLIC_URL" ]; then
-            echo "⚠️  Tunnel failed – using fallback"
-            PUBLIC_URL="https://tunnel-not-detected.trycloudflare.com"
-          fi
+#           if [ -z "$PUBLIC_URL" ]; then
+#             echo "⚠️  Tunnel failed – using fallback"
+#             PUBLIC_URL="https://tunnel-not-detected.trycloudflare.com"
+#           fi
 
-          echo "=========================================="
-          echo "  🌐  PUBLIC URL : $PUBLIC_URL"
-          echo "  🔗  Bridge     : $PUBLIC_URL/bridge"
-          echo "  💬  Chat UI    : $PUBLIC_URL/chat"
-          echo "  📄  API Docs   : $PUBLIC_URL/docs"
-          echo "=========================================="
-          echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
+#           echo "=========================================="
+#           echo "  🌐  PUBLIC URL : $PUBLIC_URL"
+#           echo "  🔗  Bridge     : $PUBLIC_URL/bridge"
+#           echo "  💬  Chat UI    : $PUBLIC_URL/chat"
+#           echo "  📄  API Docs   : $PUBLIC_URL/docs"
+#           echo "=========================================="
+#           echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
 
-      - name: Update Cloudflare DNS record
-        env:
-          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
-          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-        run: |
-          # Remove https:// and trailing slash from PUBLIC_URL to get bare hostname
-          TUNNEL_HOST=$(echo "$PUBLIC_URL" | sed 's|https://||; s|/.*||')
+#       - name: Update Cloudflare DNS record
+#         env:
+#           CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
+#           CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+#         run: |
+#           # Remove https:// and trailing slash from PUBLIC_URL to get bare hostname
+#           TUNNEL_HOST=$(echo "$PUBLIC_URL" | sed 's|https://||; s|/.*||')
 
-          # First, check if the exact CNAME record already exists
-          RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records?type=CNAME&name=putergatewayai.devforge.qzz.io" \
-            -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
-            -H "Content-Type: application/json" | jq -r '.result[0].id // empty')
+#           # First, check if the exact CNAME record already exists
+#           RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records?type=CNAME&name=putergatewayai.devforge.qzz.io" \
+#             -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
+#             -H "Content-Type: application/json" | jq -r '.result[0].id // empty')
 
-          if [ -n "$RECORD_ID" ]; then
-            # Update existing record
-            echo "Updating existing record: $RECORD_ID"
-            curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records/$RECORD_ID" \
-              -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
-              -H "Content-Type: application/json" \
-              --data "{\"type\":\"CNAME\",\"name\":\"putergatewayai\",\"content\":\"$TUNNEL_HOST\",\"ttl\":120,\"proxied\":false}" | jq .
-          else
-            # Create new record
-            echo "Creating new DNS record"
-            curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records" \
-              -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
-              -H "Content-Type: application/json" \
-              --data "{\"type\":\"CNAME\",\"name\":\"putergatewayai\",\"content\":\"$TUNNEL_HOST\",\"ttl\":120,\"proxied\":false}" | jq .
-          fi
+#           if [ -n "$RECORD_ID" ]; then
+#             # Update existing record
+#             echo "Updating existing record: $RECORD_ID"
+#             curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records/$RECORD_ID" \
+#               -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
+#               -H "Content-Type: application/json" \
+#               --data "{\"type\":\"CNAME\",\"name\":\"putergatewayai\",\"content\":\"$TUNNEL_HOST\",\"ttl\":120,\"proxied\":false}" | jq .
+#           else
+#             # Create new record
+#             echo "Creating new DNS record"
+#             curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE/dns_records" \
+#               -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
+#               -H "Content-Type: application/json" \
+#               --data "{\"type\":\"CNAME\",\"name\":\"putergatewayai\",\"content\":\"$TUNNEL_HOST\",\"ttl\":120,\"proxied\":false}" | jq .
+#           fi
 
-      # ── Save public URL to JSON (used by get-started.html) ────────────
-      - name: Save public URL to JSON
-        run: |
-          echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
+#       # ── Save public URL to JSON (used by get-started.html) ────────────
+#       - name: Save public URL to JSON
+#         run: |
+#           echo "{\"url\":\"$PUBLIC_URL\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > public_url.json
 
-      # ── Update get-started.html with real repo path ───────────────────
-      - name: Update bridge.html with live server URL
-        run: |
-          sed -i "s|const SERVER = .*|const SERVER = '$PUBLIC_URL';|" bridge.html
+#       # ── Update get-started.html with real repo path ───────────────────
+#       - name: Update bridge.html with live server URL
+#         run: |
+#           sed -i "s|const SERVER = .*|const SERVER = '$PUBLIC_URL';|" bridge.html
 
-      # ── Update README.md live server block ────────────────────────────
-      - name: Update README with live server URLs
-        run: |
-          START="<!-- LIVE_URL_START -->"
-          END="<!-- LIVE_URL_END -->"
+#       # ── Update README.md live server block ────────────────────────────
+#       - name: Update README with live server URLs
+#         run: |
+#           START="<!-- LIVE_URL_START -->"
+#           END="<!-- LIVE_URL_END -->"
 
-          sed -i "/$START/,/$END/d" README.md
+#           sed -i "/$START/,/$END/d" README.md
 
-          {
-            echo ""
-            echo "$START"
-            echo "🌐 **Live Server URL:** $PUBLIC_URL  "
-            echo "🔗 **Bridge:** $PUBLIC_URL/bridge  "
-            echo "💬 **Chat UI:** $PUBLIC_URL/chat  "
-            echo "📄 **API Docs:** $PUBLIC_URL/docs  "
-            echo "🌐 **API Endpoint:** $PUBLIC_URL/v1  "
-            echo "⏱️ *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*  "
-            echo "$END"
-          } >> README.md
+#           {
+#             echo ""
+#             echo "$START"
+#             echo "🌐 **Live Server URL:** $PUBLIC_URL  "
+#             echo "🔗 **Bridge:** $PUBLIC_URL/bridge  "
+#             echo "💬 **Chat UI:** $PUBLIC_URL/chat  "
+#             echo "📄 **API Docs:** $PUBLIC_URL/docs  "
+#             echo "🌐 **API Endpoint:** $PUBLIC_URL/v1  "
+#             echo "⏱️ *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*  "
+#             echo "$END"
+#           } >> README.md
 
-      # ── Update test_api.py with live base URL ─────────────────────────
-      - name: Update test_api.py with live base URL
-        run: |
-          sed -i "s|^BASE_URL = .*|BASE_URL = \"$PUBLIC_URL/v1\"|" test_api.py
+#       # ── Update test_api.py with live base URL ─────────────────────────
+#       - name: Update test_api.py with live base URL
+#         run: |
+#           sed -i "s|^BASE_URL = .*|BASE_URL = \"$PUBLIC_URL/v1\"|" test_api.py
 
-      # ── Commit and push all changes ──────────────────────────────────
-      - name: Commit updated files
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "🌐 Update public tunnel URL, README, test_api, and get-started"
-          file_pattern: 'public_url.json README.md get-started.html test_api.py'
+#       # ── Commit and push all changes ──────────────────────────────────
+#       - name: Commit updated files
+#         uses: stefanzweifel/git-auto-commit-action@v5
+#         with:
+#           commit_message: "🌐 Update public tunnel URL, README, test_api, and get-started"
+#           file_pattern: 'public_url.json README.md get-started.html test_api.py'
 
-      # ── Run server with 5‑hour restart loop ──────────────────────────
-      - name: Run server (5‑hour cycle)
-        run: |
-          RUN_SECONDS=18000   # 5 hours
+#       # ── Run server with 5‑hour restart loop ──────────────────────────
+#       - name: Run server (5‑hour cycle)
+#         run: |
+#           RUN_SECONDS=18000   # 5 hours
 
-          while true; do
-            echo ""
-            echo "▶  Starting server at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-            bash run.sh &
-            SERVER_PID=$!
-            echo "   PID: $SERVER_PID — will restart in ${RUN_SECONDS}s"
-            sleep $RUN_SECONDS
+#           while true; do
+#             echo ""
+#             echo "▶  Starting server at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+#             bash run.sh &
+#             SERVER_PID=$!
+#             echo "   PID: $SERVER_PID — will restart in ${RUN_SECONDS}s"
+#             sleep $RUN_SECONDS
 
-            echo "⏹  Stopping server (PID $SERVER_PID) at $(date -u)"
-            kill $SERVER_PID 2>/dev/null || true
-            wait $SERVER_PID 2>/dev/null || true
+#             echo "⏹  Stopping server (PID $SERVER_PID) at $(date -u)"
+#             kill $SERVER_PID 2>/dev/null || true
+#             wait $SERVER_PID 2>/dev/null || true
 
-            echo "🔄  Restarting immediately..."
-            sleep 2
-          done
+#             echo "🔄  Restarting immediately..."
+#             sleep 2
+#           done
