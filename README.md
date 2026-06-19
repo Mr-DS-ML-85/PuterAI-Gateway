@@ -230,3 +230,12 @@ MIT License
 
 Issues and pull requests welcome!
 ---
+
+<!-- LIVE_URL_START -->
+🌐 **Live Server URL:** https://com-truth-modes-agenda.trycloudflare.com  
+🔗 **Bridge:** https://com-truth-modes-agenda.trycloudflare.com/bridge  
+💬 **Chat UI:** https://com-truth-modes-agenda.trycloudflare.com/chat  
+📄 **API Docs:** https://com-truth-modes-agenda.trycloudflare.com/docs  
+🌐 **API Endpoint:** https://com-truth-modes-agenda.trycloudflare.com/v1  
+⏱️ *Updated: 2026-06-19 05:08:18 UTC*  
+<!-- LIVE_URL_END -->
